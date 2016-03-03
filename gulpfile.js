@@ -5,10 +5,15 @@ bower = require('gulp-bower');
 
 var files = [
     'bower_components/sprintf.js/src/sprintf.js',
+    'bower_components/jdataview/dist/browser/jdataview.js',
     'src/Translation.js',
     'src/TranslationCollection.js',
     'src/DomainCollection.js',
     'src/Translator.js',
+    'src/parsers/Parsers.js',
+    'src/parsers/Parsers.Base.js',
+    'src/parsers/Parsers.MoParser.js',
+    'src/parsers/Parsers.PoParser.js',
     'src/providers/Providers.js',
     'src/providers/Providers.Base.js',
     'src/providers/Providers.String.js',

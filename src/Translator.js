@@ -22,6 +22,8 @@ Translator.prototype.load = function(options) {
             }
         }
     }
+
+    console.error('No valid options provided for loading translations.');
 };
 
 

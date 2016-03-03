@@ -18,6 +18,7 @@
     "tests"
   ],
   "dependencies": {
-    "sprintf.js": "jakobwesthoff/sprintf.js"
+    "sprintf.js": "jakobwesthoff/sprintf.js",
+    "jdataview": "^2.5.0"
   }
 }
