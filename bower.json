@@ -1,0 +1,23 @@
+{
+  "name": "gettext.js",
+  "homepage": "https://github.com/soldag/gettext.js",
+  "authors": [
+    "Sören Oldag <soeren_oldag@freenet.de>"
+  ],
+  "description": "A simple and lightweight GNU gettext implementation for JavaScript.",
+  "main": "dist/gettext.js",
+  "moduleType": [
+    "amd"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "sprintf.js": "jakobwesthoff/sprintf.js"
+  }
+}

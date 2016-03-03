@@ -1,9 +1,10 @@
 var gulp = require('gulp'),
 concat = require('gulp-concat'),
-uglify = require('gulp-uglify');
+uglify = require('gulp-uglify'),
+bower = require('gulp-bower');
 
 var files = [
-    'lib/sprintf.js',
+    'bower_components/sprintf.js/src/sprintf.js',
     'src/Translation.js',
     'src/TranslationCollection.js',
     'src/DomainCollection.js',
@@ -15,16 +16,14 @@ var files = [
     'src/providers/Providers.Link.js'
 ];
 
-gulp.task('build', function(){
-    gulp.src(files, {'base':'src'})
+gulp.task('build', function() {
+    bower();
+    gulp.src(files, {'base': 'src'})
         .pipe(concat('gettext.js'))
         .pipe(gulp.dest('./dist'));
     gulp.src('lib/gettext.js')
         .pipe(uglify())
         .pipe(concat('gettext.min.js'))
         .pipe(gulp.dest('./dist'));
-
-    return;
 });
-
 gulp.task('default', ['build']);

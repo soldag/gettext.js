@@ -1,0 +1,22 @@
+{
+  "name": "gettext.js",
+  "version": "1.0.0",
+  "description": "A simple and lightweight GNU gettext implementation for JavaScript.",
+  "main": "dist/gettext.js",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-bower": "0.0.13",
+    "gulp-concat": "^2.6.0",
+    "gulp-uglify": "^1.5.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/soldag/gettext.js.git"
+  },
+  "author": "Sören Oldag <soeren_oldag@freenet.de>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/soldag/gettext.js/issues"
+  },
+  "homepage": "https://github.com/soldag/gettext.js#readme"
+}
