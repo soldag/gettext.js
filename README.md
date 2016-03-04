@@ -58,22 +58,22 @@ Translations can alternatively be load asynchronously using the html `link` tag 
 gettext.js provides the following standard gettext functions for translating messages. 
 
 ```js
-Translator.gettext(key)
-Translator.dgettext(domain, key)
-Translator.pgettext(context, key)
-Translator.dcngettext(domain, context, key)
-Translator.ngettext(singularKey, pluralKey, numericValue)
-Translator.npgettext(context, singularKey, pluralKey, numericValue)
-Translator.dngettext(domain, singularKey, pluralKey, numericValue)
-Translator.dnpgettext(domain, context, singularKey, pluralKey, numericValue)
+Translator.gettext(key, placeholderValues)
+Translator.dgettext(domain, key, placeholderValues)
+Translator.pgettext(context, key, placeholderValues)
+Translator.dcngettext(domain, context, key, placeholderValues)
+Translator.ngettext(singularKey, pluralKey, numericValue, placeholderValues)
+Translator.npgettext(context, singularKey, pluralKey, numericValue, placeholderValues)
+Translator.dngettext(domain, singularKey, pluralKey, numericValue, placeholderValues)
+Translator.dnpgettext(domain, context, singularKey, pluralKey, numericValue, placeholderValues)
 ```
 
 ##### String formatting
 
-Each of the functions above accepts placeholder values for string formatting as additional arguments. 
+Each of the functions above accepts an array of placeholder values for string formatting. 
 
 ```js
-Translator.gettext('First three letters of the alphabet are %s, %s and %s.', 'a', 'b', 'c');
+Translator.gettext('First three letters of the alphabet are %s, %s and %s.', ['a', 'b', 'c']);
 ```
 
 Named placeholders are also supported. These placeholders refer to keys within an object you pass to the function. 
