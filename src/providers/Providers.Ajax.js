@@ -8,36 +8,36 @@ Providers.Ajax = function(defaultDomain) {
 Providers.Ajax.prototype = Object.create(Providers.Base.prototype);
 Providers.Ajax.prototype.constructor = Providers.Ajax;
 
-Providers.Ajax.PO_FILE_TYPE = 'po';
-Providers.Ajax.MO_FILE_TYPE = 'mo';
+Providers.Ajax.prototype.PO_MIME_TYPE = 'application/gettext-po';
+Providers.Ajax.prototype.MO_MIME_TYPE = 'application/gettext-mo';
 
 
 Providers.Ajax.canLoad = function(options) {
-    return options['type'] === 'ajax' && 'url' in options && 'fileType' in options;
+    return options.mode == 'ajax' && 'url' in options && 'type' in options;
 };
 
 
 Providers.Ajax.prototype.loadFromOptions = function(options, callback) {
-    var domain = options['domain'] || this.defaultDomain;
-    var url = options['url'];
-    var fileType = options['fileType'];
+    var domain = options.domain || this.defaultDomain;
+    var url = options.url;
+    var type = options.type;
 
-    this.load(domain, url, fileType, callback);
+    this.load(domain, url, type, callback);
 };
 
 
-Providers.Ajax.prototype.load = function(domain, url, fileType, callback) {
+Providers.Ajax.prototype.load = function(domain, url, type, callback) {
     this.addCallback(callback);
 
     var _this = this;
     var binarySource;
-    fileType = fileType.toLowerCase();
-    switch(fileType) {
-        case Providers.Ajax.PO_FILE_TYPE:
+    type = type.toLowerCase();
+    switch(type) {
+        case this.PO_MIME_TYPE:
             binarySource = false;
             break;
 
-        case Providers.Ajax.MO_FILE_TYPE:
+        case this.MO_MIME_TYPE:
             binarySource = true;
             break;
 
@@ -47,7 +47,7 @@ Providers.Ajax.prototype.load = function(domain, url, fileType, callback) {
     }
     this.doRequest(url, binarySource, function(data) {
         var parser = _this.poParser;
-        if(fileType == Providers.Ajax.MO_FILE_TYPE) {
+        if(type == _this.MO_MIME_TYPE) {
             parser = _this.moParser;
         }
         _this.triggerDone(parser.parse(domain, data));

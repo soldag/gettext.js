@@ -9,13 +9,13 @@ Providers.String.prototype.constructor = Providers.String;
 
 
 Providers.String.canLoad = function(options) {
-    return options['type'] === 'string' && 'data' in options;
+    return options.mode == 'string' && 'data' in options;
 };
 
 
 Providers.String.prototype.loadFromOptions = function(options, callback) {
-    var domain = options['domain'] || this.defaultDomain;
-    var text = options['data'];
+    var domain = options.domain || this.defaultDomain;
+    var text = options.data;
 
     this.load(domain, text, callback);
 };
