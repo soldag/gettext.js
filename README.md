@@ -1,15 +1,22 @@
-# gettext.js
-gettext.js is a simple and lightweight GNU gettext implementation for JavaScript. It makes it easy to load translations from PO or MO files and use them for localization in the browser (Node.JS support is planned!). The library supports different translation domains, contexts and plural forms. Additionally, it comes with an built-in string formatting mechanism for parameterized messages.  
+# gettext.js [![Dependency Status][dependencies-image]][dependencies-url] [![devDependency Status][dev-dependencies-image]][dev-dependencies-url]
 
-gettext.js was inspired by [Pomo](https://github.com/cfv1984/Pomo).
+[dependencies-image]: https://david-dm.org/soldag/gettext.js.svg
+[dependencies-url]: https://david-dm.org/soldag/gettext.js
+
+[dev-dependencies-image]: https://david-dm.org/soldag/gettext.js/dev-status.svg
+[dev-dependencies-url]: https://david-dm.org/soldag/gettext.js#info=devDependencies
+
+*gettext.js* is a simple and lightweight GNU gettext implementation for JavaScript. It makes it easy to load translations from PO or MO files and use them for localization in the browser (Node.JS support is planned!). The library supports different translation domains, contexts and plural forms. Additionally, it comes with an built-in string formatting mechanism for parameterized messages.  
+
+*gettext.js* was inspired by [Pomo](https://github.com/cfv1984/Pomo).
 
 
 # Installation
-getttext.js supports CommonJS and AMD module loading. Alternatively, the library can simply be loaded inside a HTML page using the `script` tag.
+*getttext.js* supports CommonJS and AMD module loading. Alternatively, the library can simply be loaded inside a HTML page using the `script` tag.
 
 
 # Usage
-The gettext.js module exports a `Translator` instance, which is a singleton responsible for all the localization work and the only point of contact with the library.
+The *gettext.js* module exports a `Translator` instance, which is a singleton responsible for all the localization work and the only point of contact with the library.
 
 ### Loading translation files
 Translation files can be load either by passing the content as string (only for PO files) or loading it asynchronously using Ajax. 
@@ -55,7 +62,7 @@ Translations can alternatively be load asynchronously using the html `link` tag 
 ```
 
 ### Translate messages
-gettext.js provides the following standard gettext functions for translating messages. 
+*gettext.js* provides the following standard gettext functions for translating messages. 
 
 ```js
 Translator.gettext(key, placeholderValues)
