@@ -4,11 +4,7 @@ uglify = require('gulp-uglify'),
 bower = require('gulp-bower');
 
 var files = [
-    'bower_components/sprintf.js/src/sprintf.js',
-    'bower_components/jdataview/dist/browser/jdataview.js',
-    'src/Translation.js',
-    'src/TranslationCollection.js',
-    'src/DomainCollection.js',
+    'src/utils/module-open.js',
     'src/Translator.js',
     'src/parsers/Parsers.js',
     'src/parsers/Parsers.Base.js',
@@ -18,7 +14,13 @@ var files = [
     'src/providers/Providers.Base.js',
     'src/providers/Providers.String.js',
     'src/providers/Providers.Ajax.js',
-    'src/providers/Providers.Link.js'
+    'src/providers/Providers.Link.js',
+    'src/translations/Translation.js',
+    'src/translations/TranslationCollection.js',
+    'src/translations/DomainCollection.js',
+    'bower_components/sprintf.js/src/sprintf.js',
+    'bower_components/jdataview/dist/browser/jdataview.js',
+    'src/utils/module-close.js'
 ];
 
 gulp.task('build', function() {
@@ -26,7 +28,7 @@ gulp.task('build', function() {
     gulp.src(files, {'base': 'src'})
         .pipe(concat('gettext.js'))
         .pipe(gulp.dest('./dist'));
-    gulp.src('lib/gettext.js')
+    gulp.src('dist/gettext.js')
         .pipe(uglify())
         .pipe(concat('gettext.min.js'))
         .pipe(gulp.dest('./dist'));

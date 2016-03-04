@@ -1,7 +1,6 @@
-function Translator(ignoreFuzzy) {
-    this.ignoreFuzzy = ignoreFuzzy || true;
+function Translator() {
+    this.ignoreFuzzy = true;
     this.translations = new DomainCollection();
-
     this.readyCallbacks = [];
 }
 
@@ -36,6 +35,11 @@ Translator.prototype.triggerReady = function() {
     for(var i = 0; i < this.readyCallbacks.length; i++) {
         this.readyCallbacks[i].call();
     }
+};
+
+
+Translator.prototype.setIgnoreFuzzy = function(value) {
+    this.ignoreFuzzy = value;
 };
 
 
