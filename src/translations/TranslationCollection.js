@@ -35,3 +35,6 @@ TranslationCollection.prototype.getTranslations = function(key) {
 
     return [];
 };
+
+
+module.exports = TranslationCollection;

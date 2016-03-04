@@ -1,7 +1,11 @@
-Parsers.Base = function() {};
+var DomainCollection = require('../translations/DomainCollection');
+var TranslationCollection = require('../translations/TranslationCollection');
 
 
-Parsers.Base.prototype.parseHeaders = function(text) {
+ParsersBase = function() {};
+
+
+ParsersBase.prototype.parseHeaders = function(text) {
     var headers = {};
     var headerLines = text.split('\n');
     for(var i = 0; i < headerLines.length; i++) {
@@ -16,9 +20,12 @@ Parsers.Base.prototype.parseHeaders = function(text) {
 };
 
 
-Parsers.Base.prototype.createDomainCollection = function(domain, headers, translations) {
+ParsersBase.prototype.createDomainCollection = function(domain, headers, translations) {
     var domainCollection = new DomainCollection();
     domainCollection.addDomain(domain, new TranslationCollection(headers, translations));
 
     return domainCollection;
 };
+
+
+module.exports = ParsersBase;

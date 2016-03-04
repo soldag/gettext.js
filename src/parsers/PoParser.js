@@ -1,12 +1,15 @@
-Parsers.PoParser = function() {
-    Parsers.Base.call(this);
+var ParsersBase = require('./ParserBase');
+var Translation = require('../translations/Translation');
+
+PoParser = function() {
+    ParsersBase.call(this);
 };
 
-Parsers.PoParser.prototype = Object.create(Parsers.Base.prototype);
-Parsers.PoParser.prototype.constructor = Parsers.PoParser;
+PoParser.prototype = Object.create(ParsersBase.prototype);
+PoParser.prototype.constructor = PoParser;
 
 
-Parsers.PoParser.prototype.parse = function(domain, data) {
+PoParser.prototype.parse = function(domain, data) {
     var headers, translations = {};
     var entries = data.split('\n\n');
     for(var i = 0; i < entries.length; i++) {
@@ -80,7 +83,7 @@ Parsers.PoParser.prototype.parse = function(domain, data) {
 };
 
 
-Parsers.PoParser.prototype.extractText = function(lines, startLine, charOffset) {
+PoParser.prototype.extractText = function(lines, startLine, charOffset) {
     var line = lines[startLine];
     if(line.substring(charOffset) === '""') {
         // Multi-line text
@@ -100,3 +103,6 @@ Parsers.PoParser.prototype.extractText = function(lines, startLine, charOffset) 
         return line.substring(charOffset + 1).slice(0, -1);
     }
 };
+
+
+module.exports = PoParser;

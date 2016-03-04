@@ -58,3 +58,6 @@ Translation.prototype.hasContext = function() {
 Translation.prototype.hasPlural = function() {
     return !!this.getPluralKey() && !!this.getPluralValues();
 };
+
+
+module.exports = Translation;

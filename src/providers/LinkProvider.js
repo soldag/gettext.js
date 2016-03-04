@@ -1,24 +1,27 @@
-Providers.Link = function(defaultDomain) {
-    Providers.Base.call(this, defaultDomain);
+var ProviderBase = require('./ProviderBase');
 
-    this.ajaxAdapter = new Providers.Ajax(defaultDomain);
+
+LinkProvider = function(defaultDomain, ajaxProvider) {
+    ProviderBase.call(this, defaultDomain);
+
+    this.ajaxProvider = ajaxProvider;
 };
 
-Providers.Link.prototype = Object.create(Providers.Base.prototype);
-Providers.Link.prototype.constructor = Providers.Link;
+LinkProvider.prototype = Object.create(ProviderBase.prototype);
+LinkProvider.prototype.constructor = LinkProvider;
 
 
-Providers.Link.canLoad = function(options) {
+LinkProvider.prototype.canLoad = function(options) {
     return options.mode === 'link';
 };
 
 
-Providers.Link.prototype.loadFromOptions = function (options, callback) {
+LinkProvider.prototype.loadFromOptions = function (options, callback) {
     this.load(callback);
 };
 
 
-Providers.Link.prototype.load = function (callback) {
+LinkProvider.prototype.load = function (callback) {
     this.addCallback(callback);
 
     var _this = this;
@@ -41,12 +44,12 @@ Providers.Link.prototype.load = function (callback) {
         var url = link.getAttribute('href');
         var type = link.getAttribute('type');
         var domain = link.dataset.domain || this.defaultDomain;
-        this.ajaxAdapter.load(domain, url, type, adapterCallback);
+        this.ajaxProvider.load(domain, url, type, adapterCallback);
     }
 };
 
 
-Providers.Link.prototype.getValidLinks = function() {
+LinkProvider.prototype.getValidLinks = function() {
     var validLinks = [];
     var links = document.getElementsByTagName('link');
     for(var i = 0; i < links.length; i++) {
@@ -58,3 +61,6 @@ Providers.Link.prototype.getValidLinks = function() {
 
     return validLinks;
 };
+
+
+module.exports = LinkProvider;

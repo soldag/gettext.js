@@ -1,23 +1,26 @@
-Providers.Ajax = function(defaultDomain) {
-    Providers.Base.call(this, defaultDomain);
+var ProviderBase = require('./ProviderBase');
 
-    this.poParser = new Parsers.PoParser();
-    this.moParser = new Parsers.MoParser();
+
+AjaxProvider = function(defaultDomain, poParser, moParser) {
+    ProviderBase.call(this, defaultDomain);
+
+    this.poParser = poParser;
+    this.moParser = moParser;
 };
 
-Providers.Ajax.prototype = Object.create(Providers.Base.prototype);
-Providers.Ajax.prototype.constructor = Providers.Ajax;
+AjaxProvider.prototype = Object.create(ProviderBase.prototype);
+AjaxProvider.prototype.constructor = AjaxProvider;
 
-Providers.Ajax.prototype.PO_MIME_TYPE = 'application/gettext-po';
-Providers.Ajax.prototype.MO_MIME_TYPE = 'application/gettext-mo';
+AjaxProvider.prototype.PO_MIME_TYPE = 'application/gettext-po';
+AjaxProvider.prototype.MO_MIME_TYPE = 'application/gettext-mo';
 
 
-Providers.Ajax.canLoad = function(options) {
+AjaxProvider.prototype.canLoad = function(options) {
     return options.mode == 'ajax' && 'url' in options && 'type' in options;
 };
 
 
-Providers.Ajax.prototype.loadFromOptions = function(options, callback) {
+AjaxProvider.prototype.loadFromOptions = function(options, callback) {
     var domain = options.domain || this.defaultDomain;
     var url = options.url;
     var type = options.type;
@@ -26,7 +29,7 @@ Providers.Ajax.prototype.loadFromOptions = function(options, callback) {
 };
 
 
-Providers.Ajax.prototype.load = function(domain, url, type, callback) {
+AjaxProvider.prototype.load = function(domain, url, type, callback) {
     this.addCallback(callback);
 
     var _this = this;
@@ -55,7 +58,7 @@ Providers.Ajax.prototype.load = function(domain, url, type, callback) {
 };
 
 
-Providers.Ajax.prototype.doRequest = function(url, binarySource, callback) {
+AjaxProvider.prototype.doRequest = function(url, binarySource, callback) {
     var request = new XMLHttpRequest();
     request.open('GET', url, true);
     if(binarySource) {
@@ -87,3 +90,6 @@ Providers.Ajax.prototype.doRequest = function(url, binarySource, callback) {
 
     request.send();
 };
+
+
+module.exports = AjaxProvider;

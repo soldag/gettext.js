@@ -1,18 +1,23 @@
-Parsers.MoParser = function() {
-    Parsers.Base.call(this);
+var jDataView = require('jDataView');
+var ParsersBase = require('./ParserBase');
+var Translation = require('../translations/Translation');
+
+
+MoParser = function() {
+    ParsersBase.call(this);
 };
 
-Parsers.MoParser.prototype = Object.create(Parsers.Base.prototype);
-Parsers.MoParser.prototype.constructor = Parsers.MoParser;
+MoParser.prototype = Object.create(ParsersBase.prototype);
+MoParser.prototype.constructor = MoParser;
 
 
-Parsers.MoParser.prototype.MAGIC_NUMBER_LE = 0xde120495;
-Parsers.MoParser.prototype.MAGIC_NUMBER_BE = 0x950412de;
-Parsers.MoParser.prototype.STRING_SEPARATOR_BYTES = [0x0, 0x4];
-Parsers.MoParser.prototype.STRING_ENCODING = 'utf-8';
+MoParser.prototype.MAGIC_NUMBER_LE = 0xde120495;
+MoParser.prototype.MAGIC_NUMBER_BE = 0x950412de;
+MoParser.prototype.STRING_SEPARATOR_BYTES = [0x0, 0x4];
+MoParser.prototype.STRING_ENCODING = 'utf-8';
 
 
-Parsers.MoParser.prototype.parse = function(domain, buffer) {
+MoParser.prototype.parse = function(domain, buffer) {
     // Endian check
     var littleEndian = this.isLittleEndian(buffer);
 
@@ -50,7 +55,7 @@ Parsers.MoParser.prototype.parse = function(domain, buffer) {
 };
 
 
-Parsers.MoParser.prototype.isLittleEndian = function(buffer) {
+MoParser.prototype.isLittleEndian = function(buffer) {
     var dataView = new jDataView(buffer, 0, 4);
     var magicNumber = dataView.getUint32();
     switch(magicNumber) {
@@ -66,7 +71,7 @@ Parsers.MoParser.prototype.isLittleEndian = function(buffer) {
 };
 
 
-Parsers.MoParser.prototype.getStringsFromTable = function(dataView, tableOffset, index) {
+MoParser.prototype.getStringsFromTable = function(dataView, tableOffset, index) {
     // Get string offset
     dataView.seek(tableOffset + index * 8);
     var length = dataView.getUint32();
@@ -76,7 +81,7 @@ Parsers.MoParser.prototype.getStringsFromTable = function(dataView, tableOffset,
 };
 
 
-Parsers.MoParser.prototype.readStrings = function(dataView, length, offset) {
+MoParser.prototype.readStrings = function(dataView, length, offset) {
     // Read complete string length into buffer
     var buffer = dataView.getBytes(length, offset);
 
@@ -107,7 +112,7 @@ Parsers.MoParser.prototype.readStrings = function(dataView, length, offset) {
 };
 
 
-Parsers.MoParser.prototype.createTranslation = function(originalStrings, translatedStrings) {
+MoParser.prototype.createTranslation = function(originalStrings, translatedStrings) {
     var key, value, context, pluralKey, pluralValues;
 
     // Extract context
@@ -130,3 +135,6 @@ Parsers.MoParser.prototype.createTranslation = function(originalStrings, transla
 
     return new Translation(key, value, context, pluralKey, pluralValues); //TODO: flags?
 };
+
+
+module.exports = MoParser;

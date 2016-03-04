@@ -32,3 +32,6 @@ DomainCollection.prototype.getDomain = function(domain) {
         return this.translations[domain];
     }
 };
+
+
+module.exports = DomainCollection;
