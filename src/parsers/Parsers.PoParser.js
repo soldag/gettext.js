@@ -6,7 +6,7 @@ Parsers.PoParser.prototype = Object.create(Parsers.Base.prototype);
 Parsers.PoParser.prototype.constructor = Parsers.PoParser;
 
 
-Parsers.PoParser.parse = function(domain, data) {
+Parsers.PoParser.prototype.parse = function(domain, data) {
     var headers, translations = {};
     var entries = data.split('\n\n');
     for(var i = 0; i < entries.length; i++) {
