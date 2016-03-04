@@ -10,6 +10,11 @@ Translator.prototype.DEFAULT_DOMAIN = 'messages';
 
 Translator.prototype.load = function(options) {
     var _this = this;
+
+    if('ready' in options && typeof options.ready == 'function') {
+        this.readyCallbacks.push(options.ready);
+    }
+
     for (var i in Providers) {
         if (Providers.hasOwnProperty(i)) {
             if (typeof Providers[i].canLoad === 'function' && Providers[i].canLoad(options)) {
@@ -26,15 +31,12 @@ Translator.prototype.load = function(options) {
 };
 
 
-Translator.prototype.ready = function(callback) {
-    this.readyCallbacks.push(callback);
-};
-
-
 Translator.prototype.triggerReady = function() {
     for(var i = 0; i < this.readyCallbacks.length; i++) {
         this.readyCallbacks[i].call();
     }
+
+    this.readyCallbacks = [];
 };
 
 
