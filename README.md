@@ -70,11 +70,10 @@ Translator.dnpgettext(domain, context, singularKey, pluralKey, numericValue)
 
 ##### String formatting
 
-Each of the functions above accepts additional arguments for string formatting. Those values can be passed separately or as an array as last argument(s). 
+Each of the functions above accepts placeholder values for string formatting as additional arguments. 
 
 ```js
 Translator.gettext('First three letters of the alphabet are %s, %s and %s.', 'a', 'b', 'c');
-Translator.gettext('First three letters of the alphabet are %s, %s and %s.', ['a', 'b', 'c']);
 ```
 
 Named placeholders are also supported. These placeholders refer to keys within an object you pass to the function. 
