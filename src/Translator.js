@@ -161,7 +161,7 @@ Translator.prototype.getPluralForm = function(domain, n) {
 
 Translator.prototype.getPlaceholderValues = function(args, startIndex) {
     args = Array.prototype.slice.call(args, startIndex);
-    if(Array.isArray(args[0])) {
+    if(Array.isArray(args[0]) || typeof args[0] === 'object') {
         return args[0];
     }
     else {
