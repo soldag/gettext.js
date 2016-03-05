@@ -2,6 +2,13 @@
   "name": "gettext.js",
   "version": "1.0.0",
   "description": "A simple and lightweight GNU gettext implementation for JavaScript.",
+  "keywords": [
+    "gettext",
+    "localization",
+    "l10n",
+    "internationalization",
+    "i18n"
+  ],
   "main": "dist/gettext.js",
   "devDependencies": {
     "grunt": "^0.4.5",
