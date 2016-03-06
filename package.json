@@ -1,5 +1,5 @@
 {
-  "name": "gettext.js",
+  "name": "j29n",
   "version": "1.0.0",
   "description": "A simple and lightweight GNU gettext implementation for JavaScript.",
   "keywords": [
@@ -9,7 +9,7 @@
     "internationalization",
     "i18n"
   ],
-  "main": "dist/gettext.js",
+  "main": "dist/j29n.js",
   "devDependencies": {
     "grunt": "^0.4.5",
     "grunt-browserify": "^4.0.1",
@@ -17,14 +17,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/soldag/gettext.js.git"
+    "url": "git+https://github.com/soldag/j29n.git"
   },
   "author": "Sören Oldag <soeren_oldag@freenet.de>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/soldag/gettext.js/issues"
+    "url": "https://github.com/soldag/j29n/issues"
   },
-  "homepage": "https://github.com/soldag/gettext.js#readme",
+  "homepage": "https://github.com/soldag/j29n#readme",
   "dependencies": {
     "jdataview": "^2.5.0",
     "sprintf-js": "^1.0.3"

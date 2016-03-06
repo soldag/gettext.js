@@ -1,14 +1,14 @@
-# gettext.js [![Dependency Status][dependencies-image]][dependencies-url] [![devDependency Status][dev-dependencies-image]][dev-dependencies-url]
+# j29n [![Dependency Status][dependencies-image]][dependencies-url] [![devDependency Status][dev-dependencies-image]][dev-dependencies-url]
 
-[dependencies-image]: https://david-dm.org/soldag/gettext.js.svg
-[dependencies-url]: https://david-dm.org/soldag/gettext.js
+[dependencies-image]: https://david-dm.org/soldag/j29n.svg
+[dependencies-url]: https://david-dm.org/soldag/j29n
 
-[dev-dependencies-image]: https://david-dm.org/soldag/gettext.js/dev-status.svg
-[dev-dependencies-url]: https://david-dm.org/soldag/gettext.js#info=devDependencies
+[dev-dependencies-image]: https://david-dm.org/soldag/j29n/dev-status.svg
+[dev-dependencies-url]: https://david-dm.org/soldag/j29n#info=devDependencies
 
-*gettext.js* is a simple and lightweight GNU gettext implementation for JavaScript. It makes it easy to load translations from PO or MO files and use them for localization in the browser (Node.JS support is planned!). The library supports different translation domains, contexts and plural forms. Additionally, it comes with an built-in string formatting mechanism for parameterized messages.  
+*j29n* (short for *JavaScript Internationalization*) is a simple and lightweight GNU gettext implementation for JavaScript. It makes it easy to load translations from PO or MO files and use them for localization in both  browser and Node.JS. The library supports different translation domains, contexts and plural forms. Additionally, it comes with an built-in string formatting mechanism for parameterized messages.
 
-*gettext.js* was inspired by [Pomo](https://github.com/cfv1984/Pomo).
+*j29n* was inspired by [Pomo](https://github.com/cfv1984/Pomo).
 
 
 # Installation
@@ -16,7 +16,7 @@
 
 
 # Usage
-The *gettext.js* module exports a `Translator` instance, which is a singleton responsible for all the localization work and the only point of contact with the library.
+The *j29n* module exports a `Translator` instance, which is a singleton responsible for all the localization work and the only point of contact with the library.
 
 ### Loading translation files
 Translation files can be load either by passing the content as string (only for PO files) or loading it asynchronously using Ajax. 
@@ -62,7 +62,7 @@ Translations can alternatively be load asynchronously using the html `link` tag 
 ```
 
 ### Translate messages
-*gettext.js* provides the following standard gettext functions for translating messages. 
+*j29n* provides the following standard gettext functions for translating messages.
 
 ```js
 Translator.gettext(key, placeholderValues)
@@ -104,4 +104,4 @@ Translator.setIgnoreFuzzy(false);
 ```
 
 # License
-This library is provided under [MIT license](https://raw.githubusercontent.com/soldag/gettext.js/master/LICENSE.md).
+This library is provided under [MIT license](https://raw.githubusercontent.com/soldag/j29n/master/LICENSE.md).

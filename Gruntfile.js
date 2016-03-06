@@ -4,7 +4,7 @@ module.exports = function(grunt) {
         browserify: {
             all: {
                 src: 'src/Translator.js',
-                dest: 'dist/gettext.js'
+                dest: 'dist/j29n.js'
             },
             options: {
                 browserifyOptions: {
@@ -14,8 +14,8 @@ module.exports = function(grunt) {
         },
         uglify: {
             build: {
-                src: 'dist/gettext.js',
-                dest: 'dist/gettext.min.js'
+                src: 'dist/j29n.js',
+                dest: 'dist/j29n.min.js'
             }
         }
     });
