@@ -19,14 +19,14 @@
 
 
 # Usage
-The *j29n* module exports a `Translator` instance, which is a singleton responsible for all the localization work and the only point of contact with the library.
+The *j29n* module exports a `j29n` object, which is a singleton responsible for all the internationalization work and the only point of contact with the library.
 
 ### Loading translation files
 Translation files can be load either by passing the content as string (only for PO files) or loading it asynchronously using Ajax. 
 
 ##### Load translations as string
 ```js
-Translator.load({
+j29n.load({
   mode: 'string',
   data: '\
         #: path/to/file.js:42 \
@@ -40,7 +40,7 @@ Translator.load({
 ##### Load translations asynchronously
 
 ```js
-Translator.load({
+j29n.load({
   mode: 'ajax',
   url: 'url/to/file.mo',
   type: 'application/gettext-mo', // or 'application/gettext-po' for PO files
@@ -55,7 +55,7 @@ Translations can alternatively be load asynchronously using the html `link` tag 
 ```html
 <link href="/url/to/file.mo" type="application/gettext-mo" data-domain="optional domain" />
 <script type="text/javascript">
-  Translator.load({
+  j29n.load({
     mode: 'link',
     ready: function() {
       // Optional callback is executed, when loading has finished successfully
@@ -68,14 +68,14 @@ Translations can alternatively be load asynchronously using the html `link` tag 
 *j29n* provides the following standard gettext functions for translating messages.
 
 ```js
-Translator.gettext(key, placeholderValues)
-Translator.dgettext(domain, key, placeholderValues)
-Translator.pgettext(context, key, placeholderValues)
-Translator.dcngettext(domain, context, key, placeholderValues)
-Translator.ngettext(singularKey, pluralKey, numericValue, placeholderValues)
-Translator.npgettext(context, singularKey, pluralKey, numericValue, placeholderValues)
-Translator.dngettext(domain, singularKey, pluralKey, numericValue, placeholderValues)
-Translator.dnpgettext(domain, context, singularKey, pluralKey, numericValue, placeholderValues)
+j29n.gettext(key, placeholderValues)
+j29n.dgettext(domain, key, placeholderValues)
+j29n.pgettext(context, key, placeholderValues)
+j29n.dcngettext(domain, context, key, placeholderValues)
+j29n.ngettext(singularKey, pluralKey, numericValue, placeholderValues)
+j29n.npgettext(context, singularKey, pluralKey, numericValue, placeholderValues)
+j29n.dngettext(domain, singularKey, pluralKey, numericValue, placeholderValues)
+j29n.dnpgettext(domain, context, singularKey, pluralKey, numericValue, placeholderValues)
 ```
 
 ##### String formatting
@@ -83,13 +83,13 @@ Translator.dnpgettext(domain, context, singularKey, pluralKey, numericValue, pla
 Each of the functions above accepts an array of placeholder values for string formatting. 
 
 ```js
-Translator.gettext('First three letters of the alphabet are %s, %s and %s.', ['a', 'b', 'c']);
+j29n.gettext('First three letters of the alphabet are %s, %s and %s.', ['a', 'b', 'c']);
 ```
 
 Named placeholders are also supported. These placeholders refer to keys within an object you pass to the function. 
 
 ```js
-Translator.gettext('First three letters of the alphabet are %(first)s, %(second)s and %(third)s.', {
+j29n.gettext('First three letters of the alphabet are %(first)s, %(second)s and %(third)s.', {
   first: 'a',
   second: 'b'
   third: 'c'
@@ -103,7 +103,7 @@ Per default, translations marked as *fuzzy* are ignored by the library. You can 
 function:
 
 ```js
-Translator.setIgnoreFuzzy(false);
+j29n.setIgnoreFuzzy(false);
 ```
 
 # License

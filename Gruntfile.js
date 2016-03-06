@@ -8,7 +8,7 @@ module.exports = function(grunt) {
             },
             options: {
                 browserifyOptions: {
-                    standalone: 'src/Translator'
+                    standalone: 'j29n'
                 }
             }
         },
