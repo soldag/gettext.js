@@ -1,4 +1,7 @@
-# j29n [![Dependency Status][dependencies-image]][dependencies-url] [![devDependency Status][dev-dependencies-image]][dev-dependencies-url]
+# j29n [![NPM Version][npm-image]][npm-url] [![Dependency Status][dependencies-image]][dependencies-url] [![devDependency Status][dev-dependencies-image]][dev-dependencies-url]
+
+[npm-image]: https://badge.fury.io/js/j29n.svg
+[npm-url]: https://badge.fury.io/js/j29n
 
 [dependencies-image]: https://david-dm.org/soldag/j29n.svg
 [dependencies-url]: https://david-dm.org/soldag/j29n
