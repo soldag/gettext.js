@@ -12,7 +12,7 @@
 
 
 # Installation
-*getttext.js* supports CommonJS and AMD module loading. Alternatively, the library can simply be loaded inside a HTML page using the `script` tag.
+*j29n* supports CommonJS and AMD module loading. Alternatively, the library can simply be loaded inside a HTML page using the `script` tag.
 
 
 # Usage
