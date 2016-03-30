@@ -1,0 +1,46 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: j29n\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: test.js:1
+msgid "singular translation"
+msgstr "Singluar-Übersetzung"
+
+#: test.js:2
+msgid "plural translation"
+msgid_plural "plural translations"
+msgstr[0] "Plural-Übersetzung"
+msgstr[1] "Plural-Übersetzungen"
+
+#: test.js:3
+msgctxt "context A"
+msgid "translation with context"
+msgstr "Übersetzung mit Kontext A"
+
+#: test.js:4
+msgctxt "context B"
+msgid "translation with context"
+msgstr "Übersetzung mit Kontext B"
+
+#: test.js:5
+msgctxt "context"
+msgid "plural translation with context"
+msgid_plural "plural translations with context"
+msgstr[0] "Plural-Übersetzung mit Kontext"
+msgstr[1] "Plural-Übersetzungen mit Kontext"
+
+#: test.js:6
+#, flag1, flag2
+msgid "translation with flags"
+msgstr "Übersetzung mit Flags"
+
+#: test.js:7
+msgid ""
+"multi-line "
+"translation"
+msgstr ""
+"mehrzeilige "
+"Übersetzung"
