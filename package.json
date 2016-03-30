@@ -20,6 +20,7 @@
     "istanbul": "^0.4.2",
     "jasmine": "^2.4.1",
     "jasmine-ajax": "^3.2.0",
+    "jasmine-core": "^2.4.1",
     "proxyquire": "^1.7.4",
     "xmlhttprequest": "^1.8.0"
   },
