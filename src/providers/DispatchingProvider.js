@@ -1,21 +1,11 @@
-var StringProvider = require('./StringProvider');
-var AjaxProvider = require('./AjaxProvider');
-var LinkProvider = require('./LinkProvider');
-
-
-function DispatchingProvider(defaultDomain, poParser, moParser) {
-    // Instantiate providers
-    var stringProvider = new StringProvider(defaultDomain, poParser);
-    var ajaxProvider = new AjaxProvider(defaultDomain, poParser, moParser);
-    var linkProvider = new LinkProvider(defaultDomain, ajaxProvider);
-
-    this.providers = [stringProvider, ajaxProvider, linkProvider];
+function DispatchingProvider(providers) {
+    this.providers = providers;
 }
 
 
-DispatchingProvider.prototype.canLoad = function(options) {
+DispatchingProvider.prototype.canLoadFromOptions = function(options) {
     for(var i = 0; i < this.providers.length; i++) {
-        if(this.providers[i].canLoad(options)) {
+        if(this.providers[i].canLoadFromOptions(options)) {
             return true;
         }
     }
@@ -26,10 +16,12 @@ DispatchingProvider.prototype.canLoad = function(options) {
 
 DispatchingProvider.prototype.loadFromOptions = function(options, callback) {
     for(var i = 0; i < this.providers.length; i++) {
-        if(this.providers[i].canLoad(options)) {
+        if(this.providers[i].canLoadFromOptions(options)) {
             return this.providers[i].loadFromOptions(options, callback);
         }
     }
+
+    throw new Error('There is no provider registered, that can load the given options.');
 };
 
 

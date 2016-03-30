@@ -1,4 +1,5 @@
 var ProviderBase = require('./ProviderBase');
+var DomainCollection = require('../translations/DomainCollection');
 
 
 LinkProvider = function(defaultDomain, ajaxProvider) {
@@ -11,7 +12,7 @@ LinkProvider.prototype = Object.create(ProviderBase.prototype);
 LinkProvider.prototype.constructor = LinkProvider;
 
 
-LinkProvider.prototype.canLoad = function(options) {
+LinkProvider.prototype.canLoadFromOptions = function(options) {
     return options.mode === 'link';
 };
 
@@ -37,14 +38,19 @@ LinkProvider.prototype.load = function (callback) {
         }
     };
 
-    for(var i = 0; i < links.length; i++) {
-        var link = links[i];
+    if(links.length > 0) {
+        for (var i = 0; i < links.length; i++) {
+            var link = links[i];
 
-        // Load file asynchronously
-        var url = link.getAttribute('href');
-        var type = link.getAttribute('type');
-        var domain = link.dataset.domain || this.defaultDomain;
-        this.ajaxProvider.load(domain, url, type, adapterCallback);
+            // Load file asynchronously
+            var url = link.getAttribute('href');
+            var type = link.getAttribute('type');
+            var domain = link.dataset.domain || this.defaultDomain;
+            this.ajaxProvider.load(domain, url, type, adapterCallback);
+        }
+    }
+    else {
+        this.triggerDone(domainCollection);
     }
 };
 

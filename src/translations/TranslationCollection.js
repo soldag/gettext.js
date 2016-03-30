@@ -1,6 +1,6 @@
 function TranslationCollection(headers, translations) {
-    this.headers = headers;
-    this.translations = translations;
+    this.headers = typeof headers !== 'undefined' ? headers : {};
+    this.translations = typeof translations !== 'undefined' ? translations : {};
 }
 
 
@@ -32,8 +32,6 @@ TranslationCollection.prototype.getTranslations = function(key) {
     if(this.hasTranslation(key)) {
         return this.translations[key];
     }
-
-    return [];
 };
 
 

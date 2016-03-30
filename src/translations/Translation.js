@@ -2,10 +2,13 @@ function Translation(key, value, context, pluralKey, pluralValues, flags) {
     if(!key) {
         throw new Error('Key of the translation has to be provided.');
     }
-    if(!value) {
-        if(!pluralKey || !pluralValues) {
-            throw Error('Either a value or multiple plural values have to be provided.');
+    if(!pluralValues) {
+        if (!value) {
+            throw Error('Either a singular value or multiple plural values have to be provided.');
         }
+    }
+    else if(!Array.isArray(pluralValues) || (pluralValues.length > 0 && pluralValues.length < 2)) {
+        throw Error('Plural values must be provided as array with at least two elements.');
     }
     if(!flags) {
         flags = [];
@@ -48,7 +51,7 @@ Translation.prototype.getFlags = function() {
 };
 
 Translation.prototype.hasFlag = function(name) {
-    return name in this.getFlags;
+    return this.flags.indexOf(name) > -1;
 };
 
 Translation.prototype.hasContext = function() {

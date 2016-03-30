@@ -11,7 +11,7 @@ StringProvider.prototype = Object.create(ProviderBase.prototype);
 StringProvider.prototype.constructor = StringProvider;
 
 
-StringProvider.prototype.canLoad = function(options) {
+StringProvider.prototype.canLoadFromOptions = function(options) {
     return options.mode == 'string' && 'data' in options;
 };
 

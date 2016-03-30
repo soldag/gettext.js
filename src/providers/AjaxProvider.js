@@ -15,7 +15,7 @@ AjaxProvider.prototype.PO_MIME_TYPE = 'application/gettext-po';
 AjaxProvider.prototype.MO_MIME_TYPE = 'application/gettext-mo';
 
 
-AjaxProvider.prototype.canLoad = function(options) {
+AjaxProvider.prototype.canLoadFromOptions = function(options) {
     return options.mode == 'ajax' && 'url' in options && 'type' in options;
 };
 
@@ -45,8 +45,7 @@ AjaxProvider.prototype.load = function(domain, url, type, callback) {
             break;
 
         default:
-            console.error('Invalid file type!');
-            return;
+            throw new Error('Invalid file type!');
     }
     this.doRequest(url, binarySource, function(data) {
         var parser = _this.poParser;
@@ -65,30 +64,22 @@ AjaxProvider.prototype.doRequest = function(url, binarySource, callback) {
         request.responseType = "arraybuffer";
     }
 
-    var _this = this;
     request.onload = function() {
-        if (request.status >= 200 && request.status < 400) {
-            var responseData;
-            if(binarySource) {
-                var arrayBuffer = request.response;
-                if (arrayBuffer) {
-                    responseData = new Uint8Array(arrayBuffer);
-                }
-            }
-            else {
-                responseData = request.responseText;
-            }
-            callback(responseData);
-        } else {
-            console.error('Could not load translations from resource (' + _this.url + ')!');
+        var responseData = binarySource ? request.response : request.responseText;
+        if(request.status < 200 || request.status >= 400 || !responseData) {
+            throwError();
         }
+        if(binarySource) {
+            responseData = new Uint8Array(responseData);
+        }
+        callback(responseData);
     };
-
-    request.onerror = function() {
-        console.error('Could not load translations from resource (' + _this.url + ')!');
-    };
-
+    request.onerror = throwError;
     request.send();
+
+    function throwError() {
+        throw new Error('Could not load translations from resource (' + url + ')!');
+    }
 };
 
 

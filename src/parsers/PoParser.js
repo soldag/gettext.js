@@ -27,6 +27,7 @@ PoParser.prototype.parse = function(domain, data) {
             // Extract flags
             if (line.indexOf('#,') === 0) {
                 flags = line.substring(3).split(',');
+                flags = flags.map(Function.prototype.call, String.prototype.trim);
                 continue;
             }
 
@@ -62,14 +63,14 @@ PoParser.prototype.parse = function(domain, data) {
             // Parse message plural valies
             if (line.indexOf('msgstr[') === 0) {
                 var index = parseInt(line.substring(line.indexOf('[') + 1, line.indexOf(']')));
-                pluralValues[index] = this.extractText(lines, j, 13);
+                pluralValues[index] = this.extractText(lines, j, 9 + index.toString().length);
                 continue;
             }
         }
 
         // Add translation object to dict
         if (key != '') {
-            var translation = new Translation(key, value, context, pluralKey, pluralValues);
+            var translation = new Translation(key, value, context, pluralKey, pluralValues, flags);
             if (key in translations) {
                 translations[key].push(translation);
             }

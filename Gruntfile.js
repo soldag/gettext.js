@@ -3,7 +3,7 @@ module.exports = function(grunt) {
         pkg: grunt.file.readJSON('package.json'),
         browserify: {
             all: {
-                src: 'src/Translator.js',
+                src: 'src/entry-point.js',
                 dest: 'dist/j29n.js'
             },
             options: {

@@ -1,41 +1,43 @@
 var sprintf = require('sprintf-js').sprintf;
 var vsprintf = require('sprintf-js').vsprintf;
-var PoParser = require('./parsers/PoParser');
-var MoParser = require('./parsers/MoParser');
 var DomainCollection = require('./translations/DomainCollection');
-var DispatchingProvider = require('./providers/DispatchingProvider');
 
 
-function Translator() {
-    this.ignoreFuzzy = true;
-    this.translations = new DomainCollection();
+function Translator(provider, defaultDomain, ignoreFuzzy) {
+    this.provider = provider;
+    this.defaultDomain = defaultDomain;
+    this.ignoreFuzzy = typeof ignoreFuzzy !== 'undefined' ? ignoreFuzzy : this.DEFAULT_IGNORE_FUZZY;
+
+    this.domains = new DomainCollection();
     this.readyCallbacks = [];
-
-    var poParser = new PoParser();
-    var moParser = new MoParser();
-    this.dispatchingProvider = new DispatchingProvider(this.DEFAULT_DOMAIN, poParser, moParser);
 }
 
 
-Translator.prototype.DEFAULT_DOMAIN = 'messages';
+Translator.prototype.DEFAULT_IGNORE_FUZZY = true;
+
+
+Translator.prototype.setIgnoreFuzzy = function(value) {
+    this.ignoreFuzzy = value;
+};
 
 
 Translator.prototype.load = function(options) {
     // Register callback, if provided in options
     if('ready' in options && typeof options.ready === 'function') {
         this.readyCallbacks.push(options.ready);
+        delete options.ready;
     }
 
-    // Load translations, if options are valid
+    // Load translation domains, if options are valid
     var _this = this;
-    if(this.dispatchingProvider.canLoad(options)) {
-        this.dispatchingProvider.loadFromOptions(options, function (domainCollection) {
-            _this.translations = domainCollection;
+    if(this.provider.canLoadFromOptions(options)) {
+        this.provider.loadFromOptions(options, function (domainCollection) {
+            _this.domains.addAllDomains(domainCollection, true);
             _this.triggerReady();
         });
     }
     else {
-        console.error('No valid options provided for loading translations.');
+        throw new Error('No valid options provided for loading translation domains.');
     }
 };
 
@@ -49,28 +51,23 @@ Translator.prototype.triggerReady = function() {
 };
 
 
-Translator.prototype.setIgnoreFuzzy = function(value) {
-    this.ignoreFuzzy = value;
-};
-
-
 Translator.prototype.gettext = function(key, placeholderValues) {
-    return this.dgettext(this.DEFAULT_DOMAIN, key, placeholderValues);
+    return this.dgettext(this.defaultDomain, key, placeholderValues);
 };
 
 
 Translator.prototype.dgettext = function(domain, key, placeholderValues) {
-    return this.dcngettext(domain, null, key, placeholderValues);
+    return this.dcgettext(domain, null, key, placeholderValues);
 
 };
 
 
-Translator.prototype.pgettext = function(context, key, placeholderValues) {
-    return this.dcngettext(this.DEFAULT_DOMAIN, context, key, placeholderValues);
+Translator.prototype.cgettext = function(context, key, placeholderValues) {
+    return this.dcgettext(this.defaultDomain, context, key, placeholderValues);
 };
 
 
-Translator.prototype.dcngettext = function(domain, context, key, placeholderValues) {
+Translator.prototype.dcgettext = function(domain, context, key, placeholderValues) {
     // Get translation
     var translatedText;
     var translation = this.getTranslation(domain, context, key, false);
@@ -86,21 +83,21 @@ Translator.prototype.dcngettext = function(domain, context, key, placeholderValu
 
 
 Translator.prototype.ngettext = function(singularKey, pluralKey, numericValue, placeholderValues) {
-    return this.dngettext(this.DEFAULT_DOMAIN, singularKey, pluralKey, numericValue, placeholderValues);
-};
-
-
-Translator.prototype.npgettext = function(context, singularKey, pluralKey, numericValue, placeholderValues) {
-    return this.dnpgettext(this.DEFAULT_DOMAIN, context, singularKey, pluralKey, numericValue, placeholderValues);
+    return this.dngettext(this.defaultDomain, singularKey, pluralKey, numericValue, placeholderValues);
 };
 
 
 Translator.prototype.dngettext = function(domain, singularKey, pluralKey, numericValue, placeholderValues) {
-    return this.dnpgettext(domain, null, singularKey, pluralKey, numericValue, placeholderValues);
+    return this.dcngettext(domain, null, singularKey, pluralKey, numericValue, placeholderValues);
 };
 
 
-Translator.prototype.dnpgettext = function(domain, context, singularKey, pluralKey, numericValue, placeholderValues) {
+Translator.prototype.cngettext = function(context, singularKey, pluralKey, numericValue, placeholderValues) {
+    return this.dcngettext(this.defaultDomain, context, singularKey, pluralKey, numericValue, placeholderValues);
+};
+
+
+Translator.prototype.dcngettext = function(domain, context, singularKey, pluralKey, numericValue, placeholderValues) {
     // Determine plural form for current numeric value
     var pluralForm = this.getPluralForm(domain, numericValue);
 
@@ -119,12 +116,15 @@ Translator.prototype.dnpgettext = function(domain, context, singularKey, pluralK
 
 
 Translator.prototype.getTranslation = function(domain, context, key, hasPlural) {
-    if(this.translations && this.translations.containsDomain(domain)) {
-        var keyTranslations = this.translations.getDomain(domain).getTranslations(key);
-        for(var i = 0; i < keyTranslations.length; i++) {
-            var translation = keyTranslations[i];
-            if(this.translationMatches(translation, hasPlural, context)) {
-                return translation;
+    if(this.domains && this.domains.hasDomain(domain)) {
+        var domainTranslations = this.domains.getDomain(domain);
+        if(domainTranslations.hasTranslation(key)) {
+            var keyTranslations = domainTranslations.getTranslations(key);
+            for(var i = 0; i < keyTranslations.length; i++) {
+                var translation = keyTranslations[i];
+                if(this.translationMatches(translation, hasPlural, context)) {
+                    return translation;
+                }
             }
         }
     }
@@ -141,12 +141,15 @@ Translator.prototype.translationMatches = function(translation, hasPlural, conte
 
 
 Translator.prototype.getPluralForm = function(domain, n) {
-    if (this.translations.containsDomain(domain)) {
-        var translationCollection = this.translations.getDomain(domain);
+    if (this.domains.hasDomain(domain)) {
+        var translationCollection = this.domains.getDomain(domain);
         if (translationCollection.hasHeader('Plural-Forms')) {
             var pluralFormDefinition = translationCollection.getHeader('Plural-Forms');
             var nplurals, plural;
-            eval(pluralFormDefinition);
+            try {
+                eval(pluralFormDefinition);
+            }
+            catch(e) { }
             if (typeof(plural) === 'undefined') {
                 plural = 0;
             }
@@ -158,7 +161,7 @@ Translator.prototype.getPluralForm = function(domain, n) {
         }
     }
 
-    return 0;
+    return n == 1 ? 0 : 1;
 };
 
 
@@ -176,5 +179,4 @@ Translator.prototype.formatString = function(text, placeholderValues) {
 };
 
 
-// Export singleton instance
-module.exports = new Translator();
+module.exports = Translator;

@@ -29,7 +29,7 @@ MoParser.prototype.parse = function(domain, buffer) {
     var originalTableOffset = dataView.getUint32();
     var translationsTableOffset = dataView.getUint32();
 
-    // Parse translations
+    // Parse domains
     var translations = {};
     for(var i = 0; i < totalCount - 1; i++) {
         // Read strings from mo file
@@ -66,7 +66,7 @@ MoParser.prototype.isLittleEndian = function(buffer) {
             return false;
 
         default:
-            console.error('Invalid mo file!');
+            throw new Error('Invalid mo file!');
     }
 };
 

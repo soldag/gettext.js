@@ -1,35 +1,36 @@
-var DomainCollection = function() {
-    this.translations = {};
+var DomainCollection = function(domains) {
+    this.domains = domains || {};
 };
 
 
-DomainCollection.prototype.addDomain = function(domain, translationCollection) {
-    this.translations[domain] = translationCollection
-};
+DomainCollection.prototype.addAllDomains = function(domainCollection, overwrite) {
+    if(typeof overwrite === 'undefined') {
+        overwrite = true;
+    }
 
-
-DomainCollection.prototype.addAllDomains = function(domainCollection) {
     var domains = domainCollection.getDomainNames();
-  for(var i = 0; i < domains.length; i++) {
-      var domain = domains[i];
-      this.translations[domain] = domainCollection.getDomain(domain);
-  }
+    for(var i = 0; i < domains.length; i++) {
+       var domain = domains[i];
+       if(!(domain in this.domains) || overwrite) {
+           this.domains[domain] = domainCollection.getDomain(domain);
+       }
+    }
 };
 
 
 DomainCollection.prototype.getDomainNames = function() {
-  return Object.keys(this.translations);
+  return Object.keys(this.domains);
 };
 
 
-DomainCollection.prototype.containsDomain = function(domain) {
-    return domain in this.translations;
+DomainCollection.prototype.hasDomain = function(domain) {
+    return domain in this.domains;
 };
 
 
 DomainCollection.prototype.getDomain = function(domain) {
-    if(this.containsDomain(domain)) {
-        return this.translations[domain];
+    if(this.hasDomain(domain)) {
+        return this.domains[domain];
     }
 };
 
