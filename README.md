@@ -1,4 +1,10 @@
-# j29n [![NPM Version][npm-image]][npm-url] [![Dependency Status][dependencies-image]][dependencies-url] [![devDependency Status][dev-dependencies-image]][dev-dependencies-url]
+# j29n [![Build Status][travis-image]][travis-url] [![codedoc.io][codecov-image]][codecov-url] [![NPM Version][npm-image]][npm-url] [![Dependency Status][dependencies-image]][dependencies-url] [![devDependency Status][dev-dependencies-image]][dev-dependencies-url]
+
+[travis-image]: https://travis-ci.org/soldag/j29n.svg?branch=master
+[travis-url]: https://travis-ci.org/soldag/j29n
+
+[codecov-image]: https://codecov.io/github/soldag/j29n/coverage.svg?branch=master
+[codecov-url]: https://codecov.io/github/soldag/j29n?branch=master
 
 [npm-image]: https://badge.fury.io/js/j29n.svg
 [npm-url]: https://badge.fury.io/js/j29n
