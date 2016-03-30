@@ -1,4 +1,4 @@
-var jDataView = require('jDataView');
+var jDataView = require('jdataview');
 var ParsersBase = require('./ParserBase');
 var Translation = require('../translations/Translation');
 
