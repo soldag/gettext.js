@@ -28,7 +28,7 @@
 `npm install j29n`
 
 ### Browser
-For the use in the browser, the source files have to be bundled together with their dependencies first. Therefore, [grunt](https://github.com/gruntjs/grunt) is used. By executing `grunt browser` two files will be created inside the `dist` folder: the bundled file and a minimized version of it. These bundled files can be loaded in the browser.
+For the use in the browser, the source files have to be bundled together with their dependencies first. This bundled file and a minimized version are attatched to the respective GitHub releases. Alternatively, [grunt](https://github.com/gruntjs/grunt) can be used to build them manually. By executing `grunt browser`, the two files will be created inside the `dist` folder. 
 
 *j29n* supports AMD module loading, so [RequireJS](https://github.com/requirejs/requirejs) can be used. Alternatively, the library can simply be embedded in an HTML page using the `script` tag. In this case, the *j29n* module will be made globally available.
 
