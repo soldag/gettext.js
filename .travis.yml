@@ -1,7 +1,16 @@
 language: node_js
-
 node_js:
-  - "5"
-  - "4"
-
+- '5'
+- '4'
 script: npm test && ./node_modules/.bin/codecov
+before_deploy: grunt
+deploy:
+  provider: releases
+  api_key:
+    secure: K2GhDw/eOHNtMKdMGafO31C+FEkbWUGiiB9zbbaip6rK+/+V2xQdlBaureAQAtDTLLcANH6g3yCjqCmu9JnrLy6tcQ/RezQsp3FBm0LuWm5ThPLdpENwhwwVB1tmSKl0DY8na9lEvyH5EKllJzClW+nTed+ZggpGs6lDuJyZam0hGwZ85Rq9KbTKVOYIf8H0PqfMc9u1xxeDWLr0SqFUQMTZmbVmwnZPIcoH+68x5ZnnW2ShaTly2MceAFtdnsOqElHrpvxBYGDm8RX0zSbwMarBDcVcrHEfV/7S1up+ieCfmP+D3acRnjMX9M47fAeZFzdRsIzyvfYqsaFz4bmBUpo1fdxRAGvpopPzH+XiqU4q8R1EuDCLQIBIXa44/cw80B8KR+D9DJ+udl3Gu/8aTdHeOVAGOLUu6Grs09fdUhWLkSE5GNkB7bxFJ740uE8eKx5ifCfxlPfrJb2S+7Gnbp2Hf7/L3Hy2Nbs6nlwRx3vROIL224A0SAVIFbkEbwbPTobO3Ahr3a9Q5/NHWRH052xxzYP3E3bBaO4yLEpE0cqUmNWl82qvBz9DZHYOcuoj7Yt3oCuHUo4wmHdzusajgkr1tRT1ZBJuvQIAkpe2RP3tww9pqkcvvfmP0wCI+XJlMSA5GqmXAAQgLUrzCeo8sxAME+3+k5o57R7mqeIzrL8=
+  file:
+    - dist/j29n.js
+    - dist/j29n.min.js
+  skip_cleanup: true
+  on:
+    tags: true
