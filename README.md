@@ -21,8 +21,16 @@
 
 
 # Installation
-*j29n* supports CommonJS and AMD module loading. Alternatively, the library can simply be loaded inside a HTML page using the `script` tag.
+### Node.JS
 
+*j29n* is published on [npmjs](https://www.npmjs.com/package/j29n) and can be installed using *npm*. 
+
+`npm install j29n`
+
+### Browser
+For the use in the browser, the source files have to be bundled together with their dependencies first. Therefore, [grunt](https://github.com/gruntjs/grunt) is used. By executing `grunt browser` two files will be created inside the `dist` folder: the bundled file and a minimized version of it. These bundled files can be loaded in the browser.
+
+*j29n* supports AMD module loading, so [RequireJS](https://github.com/requirejs/requirejs) can be used. Alternatively, the library can simply be embedded in an HTML page using the `script` tag. In this case, the *j29n* module will be made globally available.
 
 # Usage
 The *j29n* module exports a `j29n` object, which is a singleton responsible for all the internationalization work and the only point of contact with the library.
@@ -111,6 +119,10 @@ function:
 ```js
 j29n.setIgnoreFuzzy(false);
 ```
+
+# Testing
+
+[Jasmine](https://github.com/jasmine/jasmine) is used as test framework for *j29n*. All features are tested using Node.JS only, so there is no need for browser testing so far. Tests are located in ```test/spec``` and can be executed using ```npm test```. 
 
 # License
 This library is provided under [MIT license](https://raw.githubusercontent.com/soldag/j29n/master/LICENSE.md).
