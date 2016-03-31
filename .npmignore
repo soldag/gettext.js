@@ -1,4 +1,9 @@
+.idea/*
+.grunt/*
+dist/*
+test/*
+coverage/*
+node_modules/*
 .gitignore
 .travis.yml
 Gruntfile.js
-test
