@@ -3,7 +3,7 @@ node_js:
 - '5'
 - '4'
 script: npm test && ./node_modules/.bin/codecov
-before_deploy: grunt
+before_deploy: npm install -g grunt-cli && grunt
 deploy:
   provider: releases
   api_key:
