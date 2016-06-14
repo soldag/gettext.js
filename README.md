@@ -85,7 +85,7 @@ Translations can alternatively be load asynchronously using the html `link` tag 
 j29n.gettext(key, placeholderValues)
 j29n.dgettext(domain, key, placeholderValues)
 j29n.cgettext(context, key, placeholderValues)
-j29n.dcngettext(domain, context, key, placeholderValues)
+j29n.dcgettext(domain, context, key, placeholderValues)
 j29n.ngettext(singularKey, pluralKey, numericValue, placeholderValues)
 j29n.dngettext(domain, singularKey, pluralKey, numericValue, placeholderValues)
 j29n.cngettext(context, singularKey, pluralKey, numericValue, placeholderValues)
