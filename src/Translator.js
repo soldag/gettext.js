@@ -51,6 +51,59 @@ Translator.prototype.triggerReady = function() {
 };
 
 
+Translator.prototype.translate = function() {
+    var args = Array.prototype.slice.call(arguments);
+    if(args.length > 0) {
+        // Check, if placeholder values were passed
+        var stringArgsLength = args.length;
+        if(typeof args[stringArgsLength - 1] === 'object') {
+            stringArgsLength--;
+        }
+
+        // Check, if numeric value was passed
+        var hasNumeric = false;
+        if(typeof args[stringArgsLength - 1] === 'number') {
+            hasNumeric = true;
+            stringArgsLength--;
+        }
+
+        // Assert all arguments expect numericValue and placeholderValues are strings
+        var allStrings = args.slice(0, stringArgsLength).map(function(arg) {
+            return typeof arg === 'string'
+        }).indexOf(false) === -1;
+        if(allStrings) {
+            // Pass arguments to the appropriate gettext function
+            if(hasNumeric) {
+                switch(stringArgsLength) {
+                    case 2:
+                        return this.ngettext.apply(this, args);
+
+                    case 3:
+                        return this.dngettext.apply(this, args);
+
+                    case 4:
+                        return this.dcngettext.apply(this, args);
+                }
+            }
+            else {
+                switch(stringArgsLength) {
+                    case 1:
+                        return this.gettext.apply(this, args);
+
+                    case 2:
+                        return this.dgettext.apply(this, args);
+
+                    case 3:
+                        return this.dcgettext.apply(this, args);
+                }
+            }
+        }
+    }
+
+    throw new Error('Arguments are not valid for any of the gettext functions.');
+};
+
+
 Translator.prototype.gettext = function(key, placeholderValues) {
     return this.dgettext(this.defaultDomain, key, placeholderValues);
 };

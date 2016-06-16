@@ -3,13 +3,19 @@ var Translation = requireSrc('translations/Translation');
 var DomainCollection = requireSrc('translations/DomainCollection');
 var TranslationCollection = requireSrc('translations/TranslationCollection');
 
+var testData = require('./testdata/translator');
+
 
 describe('A Translator instance', function() {
     beforeEach(function() {
         this.sprintfSpy = jasmine.createSpy('sprintf');
-        this.sprintfSpy.and.returnValue('sprintf');
+        this.sprintfSpy.and.callFake(function(format) {
+            return format;
+        });
         this.vsprintfSpy = jasmine.createSpy('vsprintf');
-        this.vsprintfSpy.and.returnValue('vsprintf');
+        this.vsprintfSpy.and.callFake(function(format) {
+            return format;
+        });
 
         Translator = requireSrc('Translator', {
             'sprintf-js': {
@@ -18,6 +24,7 @@ describe('A Translator instance', function() {
             }
         });
     });
+
 
     it('is created correctly with ignoreFuzzy argument', function() {
         var provider = 'foo', defaultDomain = 'foobar', ignoreFuzzy = false;
@@ -28,6 +35,7 @@ describe('A Translator instance', function() {
         expect(translator.ignoreFuzzy).toBe(ignoreFuzzy);
     });
 
+
     it('is created correctly without ignoreFuzzy argument', function() {
         var provider = 'foo', defaultDomain = 'foobar';
         var translator = new Translator(provider, defaultDomain);
@@ -36,6 +44,7 @@ describe('A Translator instance', function() {
         expect(translator.defaultDomain).toBe(defaultDomain);
         expect(translator.ignoreFuzzy).toBe(translator.DEFAULT_IGNORE_FUZZY);
     });
+
 
     it('loads from valid options correctly', function(done) {
         var translations = createDomainCollection({
@@ -56,6 +65,7 @@ describe('A Translator instance', function() {
             }
         });
     });
+
 
     it('adds newly loaded translations to existing ones correctly', function(done) {
         var existingTranslations = createDomainCollection({
@@ -89,6 +99,7 @@ describe('A Translator instance', function() {
         });
     });
 
+
     it('throws an error when loading from options the provider can not load from', function() {
         var providerSpy = jasmine.createSpyObj('Provider', ['canLoadFromOptions']);
         providerSpy.canLoadFromOptions.and.returnValue = false;
@@ -99,178 +110,105 @@ describe('A Translator instance', function() {
         }).toThrowError('No valid options provided for loading translation domains.');
     });
 
-    it('translates a simple key-value translation correctly (gettext)', function() {
-        var translator = createTranslator('default', {
-            default: [new Translation('message', 'Nachricht')]
-        });
 
-        // Existing translation
-        expect(translator.gettext('message')).toBe('Nachricht');
+    describe('redirect appropriate calls to "translate" function to', function() {
+        function testMethod(method, baseArgs) {
+            it('"' + method + '" function', function() {
+                var translator = createTranslator('default', []);
+                spyOn(translator, method);
 
-        // Non-existing translation
-        expect(translator.gettext('receiver')).toBe('receiver');
+                // Test all combinations of placeholders (not present, array, object)
+                var allArgs = [baseArgs, baseArgs.concat([['bar']]), baseArgs.concat({foo: 'bar'})];
+                for(var i = 0; i < allArgs.length; i++) {
+                    translator.translate.apply(translator, allArgs[i]);
+                }
+
+                expect(translator[method].calls.allArgs()).toEqual(allArgs)
+            });
+        }
+
+        var args = {
+            'gettext': ['foo'],
+            'dgettext': ['foo', 'bar'],
+            'dcgettext': ['foo', 'bar', 'foobar'],
+            'ngettext': ['foo', 'bar', 42],
+            'dngettext': ['foo', 'bar', 'foobar', 42],
+            'dcngettext': ['foo', 'bar', 'foobar', 'fubar', 42]
+        };
+        for(var method in args) {
+            testMethod(method, args[method]);
+        }
     });
 
-    it('translates a domain-dependent key-value translation correctly (dgettext)', function() {
-        var translator = createTranslator('default', {
-            mail: [new Translation('message', 'Nachricht')],
-            art: [new Translation('message', 'Aussage')]
+
+    describe('throws an error when calling "translate" function', function() {
+        it('with too much arguments', function() {
+            var translator = createTranslator('default', []);
+            expect(function() {
+                translator.translate('foo', 'fu', 'bar', 'foobar');
+            }).toThrowError('Arguments are not valid for any of the gettext functions.');
         });
 
-        // Existing translations
-        expect(translator.dgettext('mail', 'message')).toBe('Nachricht');
-        expect(translator.dgettext('art', 'message')).toBe('Aussage');
-
-        // Non-existing translations
-        expect(translator.dgettext('mail', 'receiver')).toBe('receiver');
-        expect(translator.dgettext('technology', 'message')).toBe('message');
-    });
-
-    it('translates a context-dependent key-value translation correctly (cgettext)', function() {
-        var translator = createTranslator('default', {
-            default: [
-                new Translation('message', 'Nachricht', 'mail'),
-                new Translation('message', 'Aussage', 'art')
-            ]
+        it('with invalid arguments', function() {
+            var translator = createTranslator('default', []);
+            expect(function() {
+                translator.translate(42, 'foo');
+            }).toThrowError('Arguments are not valid for any of the gettext functions.');
         });
 
-        // Existing translations
-        expect(translator.cgettext('mail', 'message')).toBe('Nachricht');
-        expect(translator.cgettext('art', 'message')).toBe('Aussage');
-
-        // Non-existing translations
-        expect(translator.cgettext('mail', 'receiver')).toBe('receiver');
-        expect(translator.cgettext('technology', 'message')).toBe('message');
-    });
-
-    it('translates a domain and context-dependent key-value translation correctly (dcgettext)', function() {
-        var translator = createTranslator('default', {
-            domain1: [
-                new Translation('message', 'Nachricht', 'mail'),
-                new Translation('message', 'Aussage', 'art')
-            ],
-            domain2: [
-                new Translation('message', 'Brief', 'mail'),
-                new Translation('message', 'Botschaft', 'art')
-            ]
+        it('with no arguments', function() {
+            var translator = createTranslator('default', []);
+            expect(function() {
+                translator.translate();
+            }).toThrowError('Arguments are not valid for any of the gettext functions.');
         });
-
-        // Existing translations
-        expect(translator.dcgettext('domain1', 'mail', 'message')).toBe('Nachricht');
-        expect(translator.dcgettext('domain1', 'art', 'message')).toBe('Aussage');
-        expect(translator.dcgettext('domain2', 'mail', 'message')).toBe('Brief');
-        expect(translator.dcgettext('domain2', 'art', 'message')).toBe('Botschaft');
-
-        // Non-existing translations
-        expect(translator.dcgettext('domain3', 'mail', 'message')).toBe('message');
-        expect(translator.dcgettext('domain1', 'technology', 'message')).toBe('message');
-        expect(translator.dcgettext('domain1', 'mail', 'receiver')).toBe('receiver');
     });
 
-    it('translates a simple plural translation correctly (ngettext)', function() {
-        var translator = createTranslator('default', {
-            default: [
-                new Translation('message', null, null, 'messages', ['Nachricht', 'Nachrichten']),
-                new Translation('sender', 'Absender')
-            ]
-        });
 
-        // Existing translations
-        expect(translator.ngettext('message', 'messages', 1)).toBe('Nachricht');
-        expect(translator.ngettext('message', 'message', 2)).toBe('Nachrichten');
+    describe('translates correctly using', function() {
+        function testMethod(method) {
+            it(method, function() {
+                var translator = createTranslator('default', testData[method].translations);
 
-        // Non-existing translations
-        expect(translator.ngettext('sender', 'senders', 1)).toBe('sender');
-        expect(translator.ngettext('sender', 'senders', 2)).toBe('senders');
-        expect(translator.ngettext('receiver', 'receivers', 1)).toBe('receiver');
-        expect(translator.ngettext('receiver', 'receivers', 2)).toBe('receivers');
+                for (var i = 0; i < testData[method].cases.length; i++) {
+                    var testCase = testData[method].cases[i];
+                    args = testCase.arguments;
+                    if ('placeholderValues' in testCase) {
+                        args.push(testCase.placeholderValues);
+                    }
+
+                    // Assert, that translation is correct
+                    var translation = translator[method].apply(translator, args);
+                    expect(translation).toBe(testCase.translation);
+
+                    // Assert, that (v)sprintf is correctly called according to placeholderValues
+                    if ('placeholderValues' in testCase) {
+                        if (Array.isArray(testCase.placeholderValues)) {
+                            expect(this.sprintfSpy).not.toHaveBeenCalled();
+                            expect(this.vsprintfSpy).toHaveBeenCalledWith(translation, testCase.placeholderValues);
+                        }
+                        else if (typeof testCase.placeholderValues === 'object') {
+                            expect(this.sprintfSpy).toHaveBeenCalledWith(translation, testCase.placeholderValues);
+                            expect(this.vsprintfSpy).not.toHaveBeenCalled();
+                        }
+                        else {
+                            expect(this.sprintfSpy).not.toHaveBeenCalled();
+                            expect(this.vsprintfSpy).not.toHaveBeenCalled();
+                        }
+
+                        // Reset spies
+                        this.sprintfSpy.calls.reset();
+                        this.vsprintfSpy.calls.reset();
+                    }
+                }
+            });
+        }
+
+        for (var method in testData) {
+            testMethod(method);
+        }
     });
 
-    it('translates a domain-dependent plural translation correctly (dngettext)', function() {
-        var translator = createTranslator('default', {
-            mail: [
-                new Translation('message', null, null, 'messages', ['Nachricht', 'Nachrichten']),
-                new Translation('sender', 'Absender')
-            ],
-            art: [
-                new Translation('message', null, null, 'messages', ['Aussage', 'Aussagen']),
-            ]
-        });
-
-        // Existing translations
-        expect(translator.dngettext('mail', 'message', 'messages', 1)).toBe('Nachricht');
-        expect(translator.dngettext('mail', 'message', 'messages', 2)).toBe('Nachrichten');
-        expect(translator.dngettext('art', 'message', 'messages', 1)).toBe('Aussage');
-        expect(translator.dngettext('art', 'message', 'messages', 2)).toBe('Aussagen');
-
-        // Non-existing translations
-        expect(translator.dngettext('mail', 'sender', 'senders', 1)).toBe('sender');
-        expect(translator.dngettext('mail', 'sender', 'senders', 2)).toBe('senders');
-        expect(translator.dngettext('technology', 'message', 'messages', 1)).toBe('message');
-        expect(translator.dngettext('technology', 'message', 'messages', 2)).toBe('messages');
-        expect(translator.dngettext('mail', 'receiver', 'receivers', 1)).toBe('receiver');
-        expect(translator.dngettext('mail', 'receiver', 'receivers', 2)).toBe('receivers');
-    });
-
-    it('translates a context-dependent plural translation correctly (cngettext)', function() {
-        var translator = createTranslator('default', {
-            default: [
-                new Translation('message', null, 'mail', 'messages', ['Nachricht', 'Nachrichten']),
-                new Translation('message', null, 'art', 'messages', ['Aussage', 'Aussagen'])
-            ]
-        });
-
-        // Existing translations
-        expect(translator.cngettext('mail', 'message', 'messages', 1)).toBe('Nachricht');
-        expect(translator.cngettext('mail', 'message', 'messages', 2)).toBe('Nachrichten');
-        expect(translator.cngettext('art', 'message', 'messages', 1)).toBe('Aussage');
-        expect(translator.cngettext('art', 'message', 'messages', 2)).toBe('Aussagen');
-
-        // Non-existing translations
-        expect(translator.cngettext('mail', 'sender', 'senders', 1)).toBe('sender');
-        expect(translator.cngettext('mail', 'sender', 'senders', 2)).toBe('senders');
-        expect(translator.cngettext('technology', 'message', 'messages', 1)).toBe('message');
-        expect(translator.cngettext('technology', 'message', 'messages', 2)).toBe('messages');
-        expect(translator.cngettext('mail', 'receiver', 'receivers', 1)).toBe('receiver');
-        expect(translator.cngettext('mail', 'receiver', 'receivers', 2)).toBe('receivers');
-    });
-
-    it('translates a domain and context-dependent plural translation correctly (dcngettext)', function() {
-        var translator = createTranslator('default', {
-            domain1: [
-                new Translation('message', null, 'mail', 'messages', ['Nachricht', 'Nachrichten']),
-                new Translation('message', null, 'art', 'messages', ['Aussage', 'Aussagen'])
-            ],
-            domain2: [
-                new Translation('message', null, 'mail', 'messages', ['Brief', 'Briefe']),
-                new Translation('message', null, 'art', 'messages', ['Botschaft', 'Botschaften'])
-            ]
-        });
-
-        // Existing translations
-        expect(translator.dcngettext('domain1', 'mail', 'message', 'messages', 1)).toBe('Nachricht');
-        expect(translator.dcngettext('domain1', 'mail', 'message', 'messages', 2)).toBe('Nachrichten');
-        expect(translator.dcngettext('domain1', 'art', 'message', 'messages', 1)).toBe('Aussage');
-        expect(translator.dcngettext('domain1', 'art', 'message', 'messages', 2)).toBe('Aussagen');
-        expect(translator.dcngettext('domain2', 'mail', 'message', 'messages', 1)).toBe('Brief');
-        expect(translator.dcngettext('domain2', 'mail', 'message', 'messages', 2)).toBe('Briefe');
-        expect(translator.dcngettext('domain2', 'art', 'message', 'messages', 1)).toBe('Botschaft');
-        expect(translator.dcngettext('domain2', 'art', 'message', 'messages', 2)).toBe('Botschaften');
-
-        // Non-existing translations
-        expect(translator.dcngettext('domain1', 'mail', 'sender', 'senders', 1)).toBe('sender');
-        expect(translator.dcngettext('domain1', 'mail', 'sender', 'senders', 2)).toBe('senders');
-        expect(translator.dcngettext('domain1', 'technology', 'message', 'messages', 1)).toBe('message');
-        expect(translator.dcngettext('domain1', 'technology', 'message', 'messages', 2)).toBe('messages');
-        expect(translator.dcngettext('domain1', 'mail', 'receiver', 'receivers', 1)).toBe('receiver');
-        expect(translator.dcngettext('domain1', 'mail', 'receiver', 'receivers', 2)).toBe('receivers');
-        expect(translator.dcngettext('domain2', 'mail', 'sender', 'senders', 1)).toBe('sender');
-        expect(translator.dcngettext('domain2', 'mail', 'sender', 'senders', 2)).toBe('senders');
-        expect(translator.dcngettext('domain2', 'technology', 'message', 'messages', 1)).toBe('message');
-        expect(translator.dcngettext('domain2', 'technology', 'message', 'messages', 2)).toBe('messages');
-        expect(translator.dcngettext('domain2', 'mail', 'receiver', 'receivers', 1)).toBe('receiver');
-        expect(translator.dcngettext('domain2', 'mail', 'receiver', 'receivers', 2)).toBe('receivers');
-    });
 
     it('uses default plural form if according header is not set', function() {
         var translator = createTranslator('default', {
@@ -282,6 +220,7 @@ describe('A Translator instance', function() {
         expect(translator.ngettext('message', 'messages', 3)).toBe('Nachrichten');
     });
 
+
     it('returns singular forms if plural-forms header is invalid', function() {
         var translator = createTranslator('default', {
             default: [new Translation('message', null, null, 'messages', ['Nachricht', 'Nachrichten'])]
@@ -292,6 +231,7 @@ describe('A Translator instance', function() {
         expect(translator.ngettext('message', 'messages', 1)).toBe('Nachricht');
         expect(translator.ngettext('message', 'messages', 2)).toBe('Nachricht');
     });
+
 
     it('supports plural-forms that use boolean instead of integer values to determine the plural form', function() {
         var translator = createTranslator('default', {
@@ -305,60 +245,6 @@ describe('A Translator instance', function() {
         expect(translator.ngettext('message', 'messages', 3)).toBe('Nachrichten');
     });
 
-    it('replaces placeholders in translations correctly using sprintf', function() {
-        var translator = createTranslator('default', {
-            domain: [
-                new Translation('Send to %s', 'An %s senden', 'mail'),
-                new Translation('%i new message from %s', null, 'mail', '%i new messages from %s', ['%i neue Nachricht von %s', '%i neue Nachrichten von %s'])
-            ]
-        });
-
-        var placeholders = ['John Doe'];
-        expect(translator.dcgettext('domain', 'mail', 'Send to %s', placeholders)).toBe('vsprintf');
-        expect(this.vsprintfSpy).toHaveBeenCalledWith('An %s senden', placeholders);
-
-        placeholders = [1, 'John Doe'];
-        expect(translator.dcngettext('domain', 'mail', '%i new message from %s', '%i new messages from %s', 1, placeholders)).toBe('vsprintf');
-        expect(this.vsprintfSpy).toHaveBeenCalledWith('%i neue Nachricht von %s', placeholders);
-
-        placeholders = [3, 'John Doe'];
-        expect(translator.dcngettext('domain', 'mail', '%i new message from %s', '%i new messages from %s', 3, placeholders)).toBe('vsprintf');
-        expect(this.vsprintfSpy).toHaveBeenCalledWith('%i neue Nachrichten von %s', placeholders);
-
-        expect(this.sprintfSpy).not.toHaveBeenCalled();
-    });
-
-    it('replaces placeholders in translations correctly using vsprintf', function() {
-        var translator = createTranslator('default', {
-            domain: [
-                new Translation('Send to %(receiver)s', 'An %(receiver)s senden', 'mail'),
-                new Translation('%(num)i new message from %(sender)s', null, 'mail', '%(num)i new messages from %(sender)s', ['%(num)i neue Nachricht von %(sender)s', '%(num)i neue Nachrichten von %(sender)s'])
-            ]
-        });
-
-        var placeholders = {
-            receiver: 'John Doe'
-        };
-        expect(translator.dcgettext('domain', 'mail', 'Send to %(receiver)s', placeholders)).toBe('sprintf');
-        expect(this.sprintfSpy).toHaveBeenCalledWith('An %(receiver)s senden', placeholders);
-
-
-        placeholders = {
-            num: 1,
-            sender: 'John Doe'
-        };
-        expect(translator.dcngettext('domain', 'mail', '%(num)i new message from %(sender)s', '%(num)i new messages from %(sender)s', 1, placeholders)).toBe('sprintf');
-        expect(this.sprintfSpy).toHaveBeenCalledWith('%(num)i neue Nachricht von %(sender)s', placeholders);
-
-        placeholders = {
-            num: 3,
-            sender: 'John Doe'
-        };
-        expect(translator.dcngettext('domain', 'mail', '%(num)i new message from %(sender)s', '%(num)i new messages from %(sender)s', 3, placeholders)).toBe('sprintf');
-        expect(this.sprintfSpy).toHaveBeenCalledWith('%(num)i neue Nachrichten von %(sender)s', placeholders);
-
-        expect(this.vsprintfSpy).not.toHaveBeenCalled();
-    });
 
     it('does not replace placeholders if values argument is invalid', function() {
         var translator = createTranslator('default', {
@@ -372,6 +258,7 @@ describe('A Translator instance', function() {
         expect(this.vsprintfSpy).not.toHaveBeenCalled();
     });
 
+
     it('ignores fuzzy translations, if configured', function() {
         var translator = createTranslator('default', {
             default: [
@@ -382,6 +269,7 @@ describe('A Translator instance', function() {
 
         expect(translator.gettext('foobar')).toBe('foobar');
     });
+
 
     it('does not ignore fuzzy translations, if configured', function() {
         var translator = createTranslator('default', {
@@ -395,6 +283,7 @@ describe('A Translator instance', function() {
     });
 
 
+    // Helper functions
     function createTranslator(defaultDomain, domainTranslations, headers) {
         var domainCollection;
         if(domainTranslations) {
