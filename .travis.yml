@@ -14,3 +14,6 @@ deploy:
   skip_cleanup: true
   on:
     tags: true
+addons:
+  code_climate:
+    repo_token: 0392217b68c4b09602e084d4ece9a6ea0d090069aaa3f8b3f0e388d0a3c86f4d
