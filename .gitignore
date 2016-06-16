@@ -1,5 +1,12 @@
+# IntelliJ Files
+*.iml
 .idea/*
-.grunt/*
+
+# NPM modules
 node_modules/*
-dist/*
+
+# Test coverage reports
 coverage/*
+
+# Build outputs
+dist/*

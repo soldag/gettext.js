@@ -1,9 +1,20 @@
+# IntelliJ Files
+*.iml
 .idea/*
-.grunt/*
-dist/*
-test/*
-coverage/*
+
+# NPM modules
 node_modules/*
+
+# Test coverage reports
+coverage/*
+
+# Build outputs
+dist/*
+
+# Tests
+test/*
+
+# Other configuration files
 .gitignore
 .travis.yml
 Gruntfile.js
