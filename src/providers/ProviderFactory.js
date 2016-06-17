@@ -1,5 +1,6 @@
 var AjaxProvider = require('./AjaxProvider');
 var LinkProvider = require('./LinkProvider');
+var FileProvider = require('./FileProvider');
 var StringProvider = require('./StringProvider');
 var DispatchingProvider = require('./DispatchingProvider');
 
@@ -26,11 +27,17 @@ ProviderFactory.prototype.createLinkProvider = function() {
 };
 
 
+ProviderFactory.prototype.createFileProvider = function() {
+    return new FileProvider(this.defaultDomain, this.poParser, this.moParser);
+};
+
+
 ProviderFactory.prototype.createDispatchingProvider = function() {
     return new DispatchingProvider([
         this.createStringProvider(),
         this.createAjaxProvider(),
-        this.createLinkProvider()
+        this.createLinkProvider(),
+        this.createFileProvider()
     ]);
 };
 
