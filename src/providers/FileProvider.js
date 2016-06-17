@@ -27,8 +27,8 @@ FileProvider.prototype.loadFromOptions = function(options, callback) {
 };
 
 FileProvider.prototype.load = function(domain, filePath, callback) {
-    this.addCallback(callback);
-
+    var _this = this;
+    
     // Check type and set options for reading
     var readOptions = {};
     var ext = path.extname(filePath).toLowerCase();
@@ -45,7 +45,7 @@ FileProvider.prototype.load = function(domain, filePath, callback) {
     }
 
     // Read file
-    var _this = this;
+    this.addCallback(callback);
     fs.readFile(filePath, readOptions, function(error, data) {
         var parser = _this.poParser;
         if(ext === _this.MO_EXTENSION) {

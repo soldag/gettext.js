@@ -30,9 +30,9 @@ AjaxProvider.prototype.loadFromOptions = function(options, callback) {
 
 
 AjaxProvider.prototype.load = function(domain, url, type, callback) {
-    this.addCallback(callback);
-
     var _this = this;
+
+    // Check mime type
     var binarySource;
     type = type.toLowerCase();
     switch(type) {
@@ -47,6 +47,9 @@ AjaxProvider.prototype.load = function(domain, url, type, callback) {
         default:
             throw new Error('Invalid file type!');
     }
+
+    // Do AJAX request and parse result
+    this.addCallback(callback);
     this.doRequest(url, binarySource, function(data) {
         var parser = _this.poParser;
         if(type == _this.MO_MIME_TYPE) {
