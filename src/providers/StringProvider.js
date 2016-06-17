@@ -18,7 +18,7 @@ StringProvider.prototype.loadFromOptions = function(options, callback) {
 
 
 StringProvider.prototype.load = function(domain, data, callback) {
-    callback(this.parser.parse(domain, data));
+    return callback(this.parser.parse(domain, data));
 };
 
 

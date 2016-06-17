@@ -26,7 +26,7 @@ LinkProvider.prototype.load = function (callback) {
 
         callbacksRemaining--;
         if(callbacksRemaining === 0) {
-            callback(domainCollection);
+            return callback(domainCollection);
         }
     };
 
@@ -42,7 +42,7 @@ LinkProvider.prototype.load = function (callback) {
         }
     }
     else {
-        callback(domainCollection);
+        return callback(domainCollection);
     }
 };
 

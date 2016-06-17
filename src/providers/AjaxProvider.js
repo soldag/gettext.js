@@ -55,7 +55,7 @@ AjaxProvider.prototype.load = function(domain, url, type, callback) {
         if(type === _this.MO_MIME_TYPE) {
             parser = _this.moParser;
         }
-        callback(parser.parse(domain, data));
+        return callback(parser.parse(domain, data));
     });
 };
 
@@ -75,7 +75,7 @@ AjaxProvider.prototype.doRequest = function(url, binarySource, callback) {
         if(binarySource) {
             responseData = new Uint8Array(responseData);
         }
-        callback(responseData);
+        return callback(responseData);
     };
     request.onerror = throwError;
     request.send();

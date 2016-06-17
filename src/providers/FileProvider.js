@@ -52,7 +52,7 @@ FileProvider.prototype.load = function(domain, filePath, callback) {
             parser = _this.moParser;
         }
 
-        callback(parser.parse(domain, data));
+        return callback(parser.parse(domain, data));
     });
 };
 
