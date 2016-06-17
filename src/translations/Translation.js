@@ -4,11 +4,11 @@ function Translation(key, value, context, pluralKey, pluralValues, flags) {
     }
     if(!pluralValues) {
         if (!value) {
-            throw Error('Either a singular value or multiple plural values have to be provided.');
+            throw new Error('Either a singular value or multiple plural values have to be provided.');
         }
     }
     else if(!Array.isArray(pluralValues) || (pluralValues.length > 0 && pluralValues.length < 2)) {
-        throw Error('Plural values must be provided as array with at least two elements.');
+        throw new Error('Plural values must be provided as array with at least two elements.');
     }
     if(!flags) {
         flags = [];

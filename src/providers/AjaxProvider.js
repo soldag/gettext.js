@@ -1,16 +1,11 @@
 var isNode = require('detect-node');
-var ProviderBase = require('./ProviderBase');
 
 
-AjaxProvider = function(defaultDomain, poParser, moParser) {
-    ProviderBase.call(this, defaultDomain);
-
+function AjaxProvider(defaultDomain, poParser, moParser) {
+    this.defaultDomain = defaultDomain;
     this.poParser = poParser;
     this.moParser = moParser;
-};
-
-AjaxProvider.prototype = Object.create(ProviderBase.prototype);
-AjaxProvider.prototype.constructor = AjaxProvider;
+}
 
 AjaxProvider.prototype.PO_MIME_TYPE = 'application/gettext-po';
 AjaxProvider.prototype.MO_MIME_TYPE = 'application/gettext-mo';
@@ -35,7 +30,7 @@ AjaxProvider.prototype.load = function(domain, url, type, callback) {
 
     // Check environment
     if(isNode || typeof XMLHttpRequest !== 'function') {
-        throw Error('Loading translations via AJAX is only supported in browsers with XMLHttpRequest support.');
+        throw new Error('Loading translations via AJAX is only supported in browsers with XMLHttpRequest support.');
     }
 
     // Check mime type
@@ -55,13 +50,12 @@ AjaxProvider.prototype.load = function(domain, url, type, callback) {
     }
 
     // Do AJAX request and parse result
-    this.addCallback(callback);
     this.doRequest(url, binarySource, function(data) {
         var parser = _this.poParser;
         if(type === _this.MO_MIME_TYPE) {
             parser = _this.moParser;
         }
-        _this.triggerDone(parser.parse(domain, data));
+        callback(parser.parse(domain, data));
     });
 };
 

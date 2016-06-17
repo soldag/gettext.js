@@ -1,17 +1,12 @@
 var fs = require('fs');
 var path = require('path');
 var isNode = require('detect-node');
-var ProviderBase = require('./ProviderBase');
 
-FileProvider = function(defaultDomain, poParser, moParser) {
-    ProviderBase.call(this, defaultDomain);
-
+function FileProvider(defaultDomain, poParser, moParser) {
+    this.defaultDomain = defaultDomain;
     this.poParser = poParser;
     this.moParser = moParser;
-};
-
-FileProvider.prototype = Object.create(ProviderBase.prototype);
-FileProvider.prototype.constructor = FileProvider;
+}
 
 FileProvider.prototype.PO_EXTENSION = '.po';
 FileProvider.prototype.MO_EXTENSION = '.mo';
@@ -32,7 +27,7 @@ FileProvider.prototype.load = function(domain, filePath, callback) {
 
     // Check environment
     if(!isNode) {
-        throw Error('Loading translations from the file system is only supported using Node.js.');
+        throw new Error('Loading translations from the file system is only supported using Node.js.');
     }
 
     // Check type and set options for reading
@@ -51,14 +46,13 @@ FileProvider.prototype.load = function(domain, filePath, callback) {
     }
 
     // Read file
-    this.addCallback(callback);
     fs.readFile(filePath, readOptions, function(error, data) {
         var parser = _this.poParser;
         if(ext === _this.MO_EXTENSION) {
             parser = _this.moParser;
         }
 
-        _this.triggerDone(parser.parse(domain, data));
+        callback(parser.parse(domain, data));
     });
 };
 

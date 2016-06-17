@@ -88,7 +88,7 @@ MoParser.prototype.readStrings = function(dataView, length, offset) {
 
     // Read string(s) from buffer
     var strings = [];
-    for(var i = 0; i < stringOffsets.length; i++) {
+    for(i = 0; i < stringOffsets.length; i++) {
         var currentOffset = stringOffsets[i];
         var currentLength;
         if(i < stringOffsets.length - 1) {
@@ -109,8 +109,8 @@ MoParser.prototype.createTranslation = function(originalStrings, translatedStrin
     var key, value, context, pluralKey, pluralValues;
 
     // Extract context
-    if((originalStrings.length == 3 && translatedStrings.length > 1) ||
-       (originalStrings.length == 2 && translatedStrings.length == 1)) {
+    if((originalStrings.length === 3 && translatedStrings.length > 1) ||
+       (originalStrings.length === 2 && translatedStrings.length === 1)) {
         context = originalStrings.shift();
     }
 
@@ -126,7 +126,7 @@ MoParser.prototype.createTranslation = function(originalStrings, translatedStrin
         value = translatedStrings[0];
     }
 
-    return new Translation(key, value, context, pluralKey, pluralValues); //TODO: flags?
+    return new Translation(key, value, context, pluralKey, pluralValues);
 };
 
 

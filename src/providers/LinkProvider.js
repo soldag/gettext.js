@@ -1,15 +1,10 @@
-var ProviderBase = require('./ProviderBase');
 var DomainCollection = require('../translations/DomainCollection');
 
 
-LinkProvider = function(defaultDomain, ajaxProvider) {
-    ProviderBase.call(this, defaultDomain);
-
+function LinkProvider(defaultDomain, ajaxProvider) {
+    this.defaultDomain = defaultDomain;
     this.ajaxProvider = ajaxProvider;
-};
-
-LinkProvider.prototype = Object.create(ProviderBase.prototype);
-LinkProvider.prototype.constructor = LinkProvider;
+}
 
 
 LinkProvider.prototype.canLoadFromOptions = function(options) {
@@ -23,9 +18,6 @@ LinkProvider.prototype.loadFromOptions = function (options, callback) {
 
 
 LinkProvider.prototype.load = function (callback) {
-    this.addCallback(callback);
-
-    var _this = this;
     var links = this.getValidLinks();
     var callbacksRemaining = links.length;
     var domainCollection = new DomainCollection();
@@ -33,8 +25,8 @@ LinkProvider.prototype.load = function (callback) {
         domainCollection.addAllDomains(partialDomainCollection);
 
         callbacksRemaining--;
-        if(callbacksRemaining == 0) {
-            _this.triggerDone(domainCollection);
+        if(callbacksRemaining === 0) {
+            callback(domainCollection);
         }
     };
 
@@ -50,7 +42,7 @@ LinkProvider.prototype.load = function (callback) {
         }
     }
     else {
-        this.triggerDone(domainCollection);
+        callback(domainCollection);
     }
 };
 

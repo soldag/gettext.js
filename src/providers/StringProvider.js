@@ -1,14 +1,7 @@
-var ProviderBase = require('./ProviderBase');
-
-
-StringProvider = function(defaultDomain, poParser) {
-    ProviderBase.call(this, defaultDomain);
-
+function StringProvider(defaultDomain, poParser) {
+    this.defaultDomain = defaultDomain;
     this.parser = poParser;
-};
-
-StringProvider.prototype = Object.create(ProviderBase.prototype);
-StringProvider.prototype.constructor = StringProvider;
+}
 
 
 StringProvider.prototype.canLoadFromOptions = function(options) {
@@ -25,8 +18,7 @@ StringProvider.prototype.loadFromOptions = function(options, callback) {
 
 
 StringProvider.prototype.load = function(domain, data, callback) {
-    this.addCallback(callback);
-    this.triggerDone(this.parser.parse(domain, data));
+    callback(this.parser.parse(domain, data));
 };
 
 
