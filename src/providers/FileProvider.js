@@ -17,7 +17,7 @@ FileProvider.prototype.PO_EXTENSION = '.po';
 FileProvider.prototype.MO_EXTENSION = '.mo';
 
 FileProvider.prototype.canLoadFromOptions = function(options) {
-    return options.mode == 'file' && 'path' in options;
+    return options.mode === 'file' && 'path' in options;
 };
 
 FileProvider.prototype.loadFromOptions = function(options, callback) {

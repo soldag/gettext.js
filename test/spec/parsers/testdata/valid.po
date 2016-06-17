@@ -44,3 +44,7 @@ msgid ""
 msgstr ""
 "mehrzeilige "
 "Übersetzung"
+
+#: test.js:8
+msgid ""
+msgstr ""

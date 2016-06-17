@@ -5,7 +5,7 @@ var TranslationCollection = require('../translations/TranslationCollection');
 ParsersBase = function() {};
 
 
-ParsersBase.prototype.parseHeaders = function(text) {
+ParsersBase.prototype.parseHeaderText = function(text) {
     var headers = {};
     var headerLines = text.split('\\n');
     for(var i = 0; i < headerLines.length; i++) {
@@ -21,8 +21,22 @@ ParsersBase.prototype.parseHeaders = function(text) {
 
 
 ParsersBase.prototype.createDomainCollection = function(domain, headers, translations) {
+    // Group translations by key
+    var groupedTranslations = {};
+    for(var i = 0; i < translations.length; i++) {
+        var translation = translations[i];
+        var key = translation.getKey();
+        if (key in groupedTranslations) {
+            groupedTranslations[key].push(translation);
+        }
+        else {
+            groupedTranslations[key] = [translation];
+        }
+    }
+
+    // Create TranslationCollection
     var domains = {};
-    domains[domain] = new TranslationCollection(headers, translations);
+    domains[domain] = new TranslationCollection(headers, groupedTranslations);
 
     return new DomainCollection(domains);
 };

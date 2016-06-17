@@ -12,7 +12,7 @@ StringProvider.prototype.constructor = StringProvider;
 
 
 StringProvider.prototype.canLoadFromOptions = function(options) {
-    return options.mode == 'string' && 'data' in options;
+    return options.mode === 'string' && 'data' in options;
 };
 
 

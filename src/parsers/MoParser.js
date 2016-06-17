@@ -30,26 +30,19 @@ MoParser.prototype.parse = function(domain, buffer) {
     var translationsTableOffset = dataView.getUint32();
 
     // Parse domains
-    var translations = {};
+    var translations = [];
     for(var i = 0; i < totalCount - 1; i++) {
         // Read strings from mo file
         var originalStrings = this.getStringsFromTable(dataView, originalTableOffset, i);
         var translatedStrings = this.getStringsFromTable(dataView, translationsTableOffset, i);
 
         // Create translation object
-        var translation = this.createTranslation(originalStrings, translatedStrings);
-        var key = translation.getKey();
-        if (key in translations) {
-            translations[key].push(translation);
-        }
-        else {
-            translations[key] = [translation];
-        }
+        translations.push(this.createTranslation(originalStrings, translatedStrings));
     }
 
     // Parse headers
     var headerText = this.getStringsFromTable(dataView, originalTableOffset, totalCount - 1)[0];
-    var headers = this.parseHeaders(headerText);
+    var headers = this.parseHeaderText(headerText);
 
     return this.createDomainCollection(domain, headers, translations);
 };

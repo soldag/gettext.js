@@ -17,7 +17,7 @@ AjaxProvider.prototype.MO_MIME_TYPE = 'application/gettext-mo';
 
 
 AjaxProvider.prototype.canLoadFromOptions = function(options) {
-    return options.mode == 'ajax' && 'url' in options && 'type' in options;
+    return options.mode === 'ajax' && 'url' in options && 'type' in options;
 };
 
 
@@ -58,7 +58,7 @@ AjaxProvider.prototype.load = function(domain, url, type, callback) {
     this.addCallback(callback);
     this.doRequest(url, binarySource, function(data) {
         var parser = _this.poParser;
-        if(type == _this.MO_MIME_TYPE) {
+        if(type === _this.MO_MIME_TYPE) {
             parser = _this.moParser;
         }
         _this.triggerDone(parser.parse(domain, data));

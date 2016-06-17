@@ -73,34 +73,42 @@ Translator.prototype.translate = function() {
         }).indexOf(false) === -1;
         if(allStrings) {
             // Pass arguments to the appropriate gettext function
-            if(hasNumeric) {
-                switch(stringArgsLength) {
-                    case 2:
-                        return this.ngettext.apply(this, args);
-
-                    case 3:
-                        return this.dngettext.apply(this, args);
-
-                    case 4:
-                        return this.dcngettext.apply(this, args);
-                }
-            }
-            else {
-                switch(stringArgsLength) {
-                    case 1:
-                        return this.gettext.apply(this, args);
-
-                    case 2:
-                        return this.dgettext.apply(this, args);
-
-                    case 3:
-                        return this.dcgettext.apply(this, args);
-                }
+            var func = this.getAppropriateFunction(stringArgsLength, hasNumeric);
+            if(func) {
+                return func.apply(this, args);
             }
         }
     }
 
     throw new Error('Arguments are not valid for any of the gettext functions.');
+};
+
+
+Translator.prototype.getAppropriateFunction = function(stringArgsLength, hasNumeric) {
+    if(!hasNumeric) {
+        switch(stringArgsLength) {
+            case 1:
+                return this.gettext;
+
+            case 2:
+                return this.dgettext;
+
+            case 3:
+                return this.dcgettext;
+        }
+    }
+    else {
+        switch(stringArgsLength) {
+            case 2:
+                return this.ngettext;
+
+            case 3:
+                return this.dngettext;
+
+            case 4:
+                return this.dcngettext;
+        }
+    }
 };
 
 
@@ -161,7 +169,7 @@ Translator.prototype.dcngettext = function(domain, context, singularKey, pluralK
         translatedText = translation.getPluralValue(pluralForm);
     }
     else {
-        translatedText = pluralForm == 0 ? singularKey : pluralKey;
+        translatedText = pluralForm === 0 ? singularKey : pluralKey;
     }
 
     return this.formatString(translatedText, placeholderValues);
@@ -186,8 +194,8 @@ Translator.prototype.getTranslation = function(domain, context, key, hasPlural) 
 
 Translator.prototype.translationMatches = function(translation, hasPlural, context) {
     var hasContext = typeof(context) !== 'undefined' && context !== null;
-    return translation.hasContext() == hasContext
-        && hasPlural == translation.hasPlural()
+    return translation.hasContext() === hasContext
+        && hasPlural === translation.hasPlural()
         && (!hasContext || translation.getContext() === context)
         && (!this.ignoreFuzzy || !translation.hasFlag('fuzzy'));
 };
@@ -206,7 +214,7 @@ Translator.prototype.getPluralForm = function(domain, n) {
             if (typeof(plural) === 'undefined') {
                 plural = 0;
             }
-            else if (nplurals == 2 && typeof(plural) === 'boolean') {
+            else if (nplurals === 2 && typeof(plural) === 'boolean') {
                 plural = plural ? 1 : 0
             }
 
@@ -214,7 +222,7 @@ Translator.prototype.getPluralForm = function(domain, n) {
         }
     }
 
-    return n == 1 ? 0 : 1;
+    return n === 1 ? 0 : 1;
 };
 
 
