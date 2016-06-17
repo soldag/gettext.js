@@ -1,4 +1,9 @@
-var AjaxProvider = requireSrc('providers/AjaxProvider');
+var AjaxProvider = requireSrc('providers/AjaxProvider', {
+    'detect-node': false
+});
+var EnvMockedAjaxProvider = requireSrc('providers/AjaxProvider', {
+    'detect-node': true
+});
 
 
 describe('A AjaxProvider instance', function() {
@@ -17,6 +22,7 @@ describe('A AjaxProvider instance', function() {
 
         this.defaultDomain = 'foobar';
         this.provider = new AjaxProvider(this.defaultDomain, this.poParserSpy, this.moParserSpy);
+        this.envMockedProvider = new EnvMockedAjaxProvider(this.defaultDomain, this.poParserSpy, this.moParserSpy);
     });
 
     afterAll(function() {
@@ -135,6 +141,13 @@ describe('A AjaxProvider instance', function() {
                 status: 200
             });
         }).toThrowError(/Could not load translations from resource/);
+    });
+
+    it('throws an error if used in an node environment', function() {
+        var _this = this;
+        expect(function() {
+            _this.envMockedProvider.load('foo', 'bar', 'application/gettext-po');
+        }).toThrowError('Loading translations via AJAX is only supported in browsers with XMLHttpRequest support.');
     });
 
     it('extracts required properties from options with specific domain', function() {

@@ -1,3 +1,4 @@
+var isNode = require('detect-node');
 var ProviderBase = require('./ProviderBase');
 
 
@@ -31,6 +32,11 @@ AjaxProvider.prototype.loadFromOptions = function(options, callback) {
 
 AjaxProvider.prototype.load = function(domain, url, type, callback) {
     var _this = this;
+
+    // Check environment
+    if(isNode || typeof XMLHttpRequest !== 'function') {
+        throw Error('Loading translations via AJAX is only supported in browsers with XMLHttpRequest support.');
+    }
 
     // Check mime type
     var binarySource;
