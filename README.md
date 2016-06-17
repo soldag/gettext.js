@@ -51,7 +51,7 @@ j29n.load({
 });
 ```
 
-##### Load translations asynchronously
+##### Load translations by AJAX request (Browser-only)
 
 ```js
 j29n.load({
@@ -65,7 +65,7 @@ j29n.load({
 });
 ```
 
-Translations can alternatively be load asynchronously using the html `link` tag as shown in the following example:
+Translations can alternatively be loaded by AJAX request using the html `link` tag as shown in the following example:
 ```html
 <link href="/url/to/file.mo" type="application/gettext-mo" data-domain="optional domain" />
 <script type="text/javascript">
@@ -76,6 +76,19 @@ Translations can alternatively be load asynchronously using the html `link` tag 
     }
   });
 </script>
+```
+
+##### Load translations from file system (Node-only)
+
+```js
+j29n.load({
+  mode: 'file',
+  path: '/path/to/file.mo',
+  domain: 'messages' // optional
+  ready: function() {
+    // Optional callback is executed, when loading has finished successfully
+  }
+});
 ```
 
 ### Translate messages
