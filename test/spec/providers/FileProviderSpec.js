@@ -1,5 +1,8 @@
 var path = require('path');
 var FileProvider = requireSrc('providers/FileProvider');
+var EnvMockedFileProvider = requireSrc('providers/FileProvider', {
+    'detect-node': false
+});
 
 describe('A FileProvider instance', function() {
     beforeEach(function() {
@@ -11,6 +14,7 @@ describe('A FileProvider instance', function() {
 
         this.defaultDomain = 'foobar';
         this.provider = new FileProvider(this.defaultDomain, this.poParserSpy, this.moParserSpy);
+        this.envMockedProvider = new EnvMockedFileProvider(this.defaultDomain, this.poParserSpy, this.moParserSpy);
 
         // Add custom matcher to compare typed arrays, because jasmine's implementation is buggy.
         jasmine.addMatchers({
@@ -88,6 +92,13 @@ describe('A FileProvider instance', function() {
         expect(function() {
             _this.provider.load('foo', 'foobar.txt');
         }).toThrowError('Invalid file type!');
+    });
+
+    it('throws an error if not used in an node environment', function() {
+        var _this = this;
+        expect(function() {
+            _this.envMockedProvider.load('foo', path.resolve(__dirname, 'testdata/translations.po'));
+        }).toThrowError('Loading translations from the file system is only supported using Node.js.');
     });
 
     it('extracts required properties from options with specific domain', function() {

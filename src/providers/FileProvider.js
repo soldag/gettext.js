@@ -1,5 +1,6 @@
 var fs = require('fs');
 var path = require('path');
+var isNode = require('detect-node');
 var ProviderBase = require('./ProviderBase');
 
 FileProvider = function(defaultDomain, poParser, moParser) {
@@ -28,7 +29,12 @@ FileProvider.prototype.loadFromOptions = function(options, callback) {
 
 FileProvider.prototype.load = function(domain, filePath, callback) {
     var _this = this;
-    
+
+    // Check environment
+    if(!isNode) {
+        throw Error('Loading translations from the file system is only supported using Node.js.');
+    }
+
     // Check type and set options for reading
     var readOptions = {};
     var ext = path.extname(filePath).toLowerCase();

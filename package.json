@@ -36,6 +36,7 @@
   },
   "homepage": "https://github.com/soldag/j29n#readme",
   "dependencies": {
+    "detect-node": "^2.0.3",
     "jdataview": "^2.5.0",
     "sprintf-js": "^1.0.3"
   }
