@@ -1,6 +1,6 @@
 {
   "name": "j29n",
-  "version": "1.3.2",
+  "version": "1.3.3",
   "description": "A simple and lightweight GNU gettext implementation for JavaScript.",
   "keywords": [
     "gettext",
