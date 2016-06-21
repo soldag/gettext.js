@@ -1,19 +1,15 @@
-function StringProvider(defaultDomain, poParser) {
-    this.defaultDomain = defaultDomain;
+function StringProvider(poParser) {
     this.parser = poParser;
 }
 
 
 StringProvider.prototype.canLoadFromOptions = function(options) {
-    return options.mode === 'string' && 'data' in options;
+    return options.mode === 'string' && 'domain' in options && 'data' in options;
 };
 
 
 StringProvider.prototype.loadFromOptions = function(options, callback) {
-    var domain = options.domain || this.defaultDomain;
-    var text = options.data;
-
-    this.load(domain, text, callback);
+    this.load(options.domain, options.data, callback);
 };
 
 

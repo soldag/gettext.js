@@ -1,8 +1,7 @@
 var DomainCollection = require('../translations/DomainCollection');
 
 
-function LinkProvider(defaultDomain, ajaxProvider) {
-    this.defaultDomain = defaultDomain;
+function LinkProvider(ajaxProvider) {
     this.ajaxProvider = ajaxProvider;
 }
 
@@ -13,11 +12,11 @@ LinkProvider.prototype.canLoadFromOptions = function(options) {
 
 
 LinkProvider.prototype.loadFromOptions = function (options, callback) {
-    this.load(callback);
+    this.load(options.domain, callback);
 };
 
 
-LinkProvider.prototype.load = function (callback) {
+LinkProvider.prototype.load = function (defaultDomain, callback) {
     var links = this.getValidLinks();
     var callbacksRemaining = links.length;
     var domainCollection = new DomainCollection();
@@ -37,7 +36,10 @@ LinkProvider.prototype.load = function (callback) {
             // Load file asynchronously
             var url = link.getAttribute('href');
             var type = link.getAttribute('type');
-            var domain = link.dataset.domain || this.defaultDomain;
+            var domain = link.dataset.domain || defaultDomain;
+            if(!domain) {
+                throw new Error('Link tag contains no translation domain and no default domain was provided.');
+            }
             this.ajaxProvider.load(domain, url, type, adapterCallback);
         }
     }

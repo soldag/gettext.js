@@ -6,14 +6,14 @@ describe('A StringProvider instance', function() {
         this.parserSpy = jasmine.createSpyObj('PoParser', ['parse']);
         this.parserSpy.parse.and.returnValue(this.parserResult);
 
-        this.defaultDomain = 'foobar';
-        this.provider = new StringProvider(this.defaultDomain, this.parserSpy);
+        this.provider = new StringProvider(this.parserSpy);
     });
 
     it('can load valid options', function() {
         var options = {
             mode: 'string',
-            data: 'foobar'
+            data: 'foo',
+            domain: 'foobar'
         };
         expect(this.provider.canLoadFromOptions(options)).toBe(true);
     });
@@ -22,6 +22,14 @@ describe('A StringProvider instance', function() {
         var options = {
             mode: 'string',
             text: 'foobar'
+        };
+        expect(this.provider.canLoadFromOptions(options)).toBe(false);
+    });
+
+    it('cannot load options without domain attribute', function() {
+        var options = {
+            mode: 'string',
+            data: 'foo'
         };
         expect(this.provider.canLoadFromOptions(options)).toBe(false);
     });
@@ -47,25 +55,13 @@ describe('A StringProvider instance', function() {
     it('extracts required properties from options with specific domain', function() {
         var options = {
             mode: 'string',
-            domain: 'foo',
-            data: 'bar'
+            data: 'bar',
+            domain: 'foo'
         };
         var callback = 'foobar';
 
         spyOn(this.provider, 'load');
         this.provider.loadFromOptions(options, callback);
         expect(this.provider.load).toHaveBeenCalledWith(options.domain, options.data, callback);
-    });
-
-    it('extracts required properties from options without specific domain', function() {
-        var options = {
-            mode: 'string',
-            data: 'bar'
-        };
-        var callback = 'foobar';
-
-        spyOn(this.provider, 'load');
-        this.provider.loadFromOptions(options, callback);
-        expect(this.provider.load).toHaveBeenCalledWith(this.defaultDomain, options.data, callback);
     });
 });

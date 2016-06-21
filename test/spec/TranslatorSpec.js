@@ -58,8 +58,30 @@ describe('A Translator instance', function() {
 
         var translator = new Translator(providerSpy, 'foobar');
         translator.load({
+            domain: 'fubar',
             ready: function() {
-                expect(providerSpy.loadFromOptions).toHaveBeenCalledWith({}, jasmine.any(Function));
+                expect(providerSpy.loadFromOptions).toHaveBeenCalledWith({domain: 'fubar'}, jasmine.any(Function));
+                expect(translator.domains).toEqual(translations);
+                done();
+            }
+        });
+    });
+
+
+    it('uses default domain, if loading options do not contain a domain', function(done) {
+        var translations = createDomainCollection({
+            foo: [new Translation('foo', 'fu')]
+        });
+        var providerSpy = jasmine.createSpyObj('Provider', ['canLoadFromOptions', 'loadFromOptions']);
+        providerSpy.canLoadFromOptions.and.returnValue(true);
+        providerSpy.loadFromOptions.and.callFake(function(options, callback) {
+            callback(translations);
+        });
+
+        var translator = new Translator(providerSpy, 'foobar');
+        translator.load({
+            ready: function() {
+                expect(providerSpy.loadFromOptions).toHaveBeenCalledWith({domain: 'foobar'}, jasmine.any(Function));
                 expect(translator.domains).toEqual(translations);
                 done();
             }
@@ -91,8 +113,9 @@ describe('A Translator instance', function() {
         var translator = new Translator(providerSpy, 'foobar');
         translator.domains = existingTranslations;
         translator.load({
+            domain: 'fubar',
             ready: function() {
-                expect(providerSpy.loadFromOptions).toHaveBeenCalledWith({}, jasmine.any(Function));
+                expect(providerSpy.loadFromOptions).toHaveBeenCalledWith({domain: 'fubar'}, jasmine.any(Function));
                 expect(translator.domains).toEqual(expectedTranslations);
                 done();
             }

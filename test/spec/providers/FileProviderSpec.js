@@ -7,14 +7,13 @@ var EnvMockedFileProvider = requireSrc('providers/FileProvider', {
 describe('A FileProvider instance', function() {
     beforeEach(function() {
         this.parserResult = 'foobar';
-        this.poParserSpy = jasmine.createSpyObj('PoParser', ['parse']);
-        this.poParserSpy.parse.and.returnValue(this.parserResult);
+        this.ajaxProviderSpy = jasmine.createSpyObj('PoParser', ['parse']);
+        this.ajaxProviderSpy.parse.and.returnValue(this.parserResult);
         this.moParserSpy = jasmine.createSpyObj('MoParser', ['parse']);
         this.moParserSpy.parse.and.returnValue(this.parserResult);
 
-        this.defaultDomain = 'foobar';
-        this.provider = new FileProvider(this.defaultDomain, this.poParserSpy, this.moParserSpy);
-        this.envMockedProvider = new EnvMockedFileProvider(this.defaultDomain, this.poParserSpy, this.moParserSpy);
+        this.provider = new FileProvider(this.ajaxProviderSpy, this.moParserSpy);
+        this.envMockedProvider = new EnvMockedFileProvider(this.ajaxProviderSpy, this.moParserSpy);
 
         // Add custom matcher to compare typed arrays, because jasmine's implementation is buggy.
         jasmine.addMatchers({
@@ -45,14 +44,24 @@ describe('A FileProvider instance', function() {
     it('can load valid options', function() {
         var options = {
             mode: 'file',
-            path: 'string'
+            path: 'string',
+            domain: 'foobar'
         };
         expect(this.provider.canLoadFromOptions(options)).toBe(true);
     });
 
-    it('cannot load options without path attribute', function() {
+    it('cannot load options without filePath attribute', function() {
         var options = {
-            text: 'foobar'
+            text: 'foobar',
+            domain: 'foobar'
+        };
+        expect(this.provider.canLoadFromOptions(options)).toBe(false);
+    });
+
+    it('cannot load options without domain attribute', function() {
+        var options = {
+            text: 'foobar',
+            path: 'string'
         };
         expect(this.provider.canLoadFromOptions(options)).toBe(false);
     });
@@ -70,7 +79,7 @@ describe('A FileProvider instance', function() {
 
         this.provider.load('foo', path.resolve(__dirname, 'testdata/translations.po'), function(result) {
             expect(result).toBe(_this.parserResult);
-            expect(_this.poParserSpy.parse).toHaveBeenCalledWith('foo', 'foobar');
+            expect(_this.ajaxProviderSpy.parse).toHaveBeenCalledWith('foo', 'foobar');
             done();
         });
     });
@@ -101,28 +110,16 @@ describe('A FileProvider instance', function() {
         }).toThrowError('Loading translations from the file system is only supported using Node.js.');
     });
 
-    it('extracts required properties from options with specific domain', function() {
+    it('extracts required properties from options', function() {
         var options = {
             mode: 'file',
-            domain: 'foobar',
-            path: 'foo.po'
+            path: 'foo.po',
+            domain: 'foobar'
         };
         var callback = 'foobar';
 
         spyOn(this.provider, 'load');
         this.provider.loadFromOptions(options, callback);
         expect(this.provider.load).toHaveBeenCalledWith(options.domain, options.path, callback);
-    });
-
-    it('extracts required properties from options without specific domain', function() {
-        var options = {
-            mode: 'file',
-            path: 'foo.po'
-        };
-        var callback = 'foobar';
-
-        spyOn(this.provider, 'load');
-        this.provider.loadFromOptions(options, callback);
-        expect(this.provider.load).toHaveBeenCalledWith(this.defaultDomain, options.path, callback);
     });
 });

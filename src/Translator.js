@@ -28,6 +28,11 @@ Translator.prototype.load = function(options) {
         delete options.ready;
     }
 
+    // Use default domain, if not provided in options
+    if(!('domain' in options)) {
+        options.domain = this.defaultDomain;
+    }
+
     // Load translation domains, if options are valid
     var _this = this;
     if(this.provider.canLoadFromOptions(options)) {

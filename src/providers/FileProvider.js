@@ -2,8 +2,7 @@ var fs = require('fs');
 var path = require('path');
 var isNode = require('detect-node');
 
-function FileProvider(defaultDomain, poParser, moParser) {
-    this.defaultDomain = defaultDomain;
+function FileProvider(poParser, moParser) {
     this.poParser = poParser;
     this.moParser = moParser;
 }
@@ -12,14 +11,11 @@ FileProvider.prototype.PO_EXTENSION = '.po';
 FileProvider.prototype.MO_EXTENSION = '.mo';
 
 FileProvider.prototype.canLoadFromOptions = function(options) {
-    return options.mode === 'file' && 'path' in options;
+    return options.mode === 'file' && 'domain' in options && 'path' in options;
 };
 
 FileProvider.prototype.loadFromOptions = function(options, callback) {
-    var domain = options.domain || this.defaultDomain;
-    var filePath = options.path;
-
-    this.load(domain, filePath, callback);
+    this.load(options.domain, options.path, callback);
 };
 
 FileProvider.prototype.load = function(domain, filePath, callback) {

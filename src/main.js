@@ -1,15 +1,12 @@
-var Translator = require('./Translator');
-var PoParser = require('./parsers/PoParser');
-var MoParser = require('./parsers/MoParser');
+var ParserFactory = require('./parsers/ParserFactory');
 var ProviderFactory = require('./providers/ProviderFactory');
+var TranslatorFactory = require('./TranslatorFactory');
 
 
 var defaultDomain = 'messages';
-var poParser = new PoParser();
-var moParser = new MoParser();
-var providerFactory = new ProviderFactory(defaultDomain, poParser, moParser);
-var dispatchingProvider = providerFactory.createDispatchingProvider();
-var translator = new Translator(dispatchingProvider, defaultDomain);
+var parserFactory = new ParserFactory();
+var providerFactory = new ProviderFactory(parserFactory);
+var translatorFactory = new TranslatorFactory(defaultDomain, providerFactory);
 
 
-module.exports = translator;
+module.exports = translatorFactory.createTranslator();

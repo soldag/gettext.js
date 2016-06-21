@@ -13,16 +13,15 @@ describe('A AjaxProvider instance', function() {
 
     beforeEach(function() {
         this.poParserResult = 'foo';
-        this.poParserSpy = jasmine.createSpyObj('PoParser', ['parse']);
-        this.poParserSpy.parse.and.returnValue(this.poParserResult);
+        this.ajaxProviderSpy = jasmine.createSpyObj('PoParser', ['parse']);
+        this.ajaxProviderSpy.parse.and.returnValue(this.poParserResult);
 
         this.moParserResult = 'bar';
         this.moParserSpy = jasmine.createSpyObj('MoParser', ['parse']);
         this.moParserSpy.parse.and.returnValue(this.moParserResult);
 
-        this.defaultDomain = 'foobar';
-        this.provider = new AjaxProvider(this.defaultDomain, this.poParserSpy, this.moParserSpy);
-        this.envMockedProvider = new EnvMockedAjaxProvider(this.defaultDomain, this.poParserSpy, this.moParserSpy);
+        this.provider = new AjaxProvider(this.ajaxProviderSpy, this.moParserSpy);
+        this.envMockedProvider = new EnvMockedAjaxProvider(this.ajaxProviderSpy, this.moParserSpy);
     });
 
     afterAll(function() {
@@ -33,7 +32,8 @@ describe('A AjaxProvider instance', function() {
         var options = {
             mode: 'ajax',
             url: 'foo',
-            type: 'bar'
+            type: 'bar',
+            domain: 'foobar'
         };
         expect(this.provider.canLoadFromOptions(options)).toBe(true);
     });
@@ -50,6 +50,14 @@ describe('A AjaxProvider instance', function() {
         var options = {
             mode: 'ajax',
             type: 'bar'
+        };
+        expect(this.provider.canLoadFromOptions(options)).toBe(false);
+    });
+
+    it('cannot load options without domain attribute', function() {
+        var options = {
+            mode: 'ajax',
+            url: 'foo'
         };
         expect(this.provider.canLoadFromOptions(options)).toBe(false);
     });
@@ -71,7 +79,7 @@ describe('A AjaxProvider instance', function() {
         var ajaxResponse = 'bar';
         this.provider.load(domain, url, 'application/gettext-po', function(result) {
             expect(result).toBe(_this.poParserResult);
-            expect(_this.poParserSpy.parse).toHaveBeenCalledWith(domain, ajaxResponse);
+            expect(_this.ajaxProviderSpy.parse).toHaveBeenCalledWith(domain, ajaxResponse);
             expect(_this.moParserSpy.parse).not.toHaveBeenCalled();
             done();
         });
@@ -93,7 +101,7 @@ describe('A AjaxProvider instance', function() {
         this.provider.load(domain, url, 'application/gettext-mo', function(result) {
             expect(result).toBe(_this.moParserResult);
             expect(_this.moParserSpy.parse).toHaveBeenCalledWith(domain, ajaxResponse);
-            expect(_this.poParserSpy.parse).not.toHaveBeenCalled();
+            expect(_this.ajaxProviderSpy.parse).not.toHaveBeenCalled();
             done();
         });
 
@@ -150,7 +158,7 @@ describe('A AjaxProvider instance', function() {
         }).toThrowError('Loading translations via AJAX is only supported in browsers with XMLHttpRequest support.');
     });
 
-    it('extracts required properties from options with specific domain', function() {
+    it('extracts required properties from options', function() {
         var options = {
             mode: 'ajax',
             domain: 'foobar',
@@ -162,18 +170,5 @@ describe('A AjaxProvider instance', function() {
         spyOn(this.provider, 'load');
         this.provider.loadFromOptions(options, callback);
         expect(this.provider.load).toHaveBeenCalledWith(options.domain, options.url, options.type, callback);
-    });
-
-    it('extracts required properties from options without specific domain', function() {
-        var options = {
-            mode: 'ajax',
-            url: 'foo',
-            type: 'bar'
-        };
-        var callback = 'foobar';
-
-        spyOn(this.provider, 'load');
-        this.provider.loadFromOptions(options, callback);
-        expect(this.provider.load).toHaveBeenCalledWith(this.defaultDomain, options.url, options.type, callback);
     });
 });

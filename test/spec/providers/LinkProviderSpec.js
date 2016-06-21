@@ -13,8 +13,8 @@ describe('A LinkProvider instance', function() {
 
         // Mock AjaxProvider instance injected into LinkProvider
         this.poParserResult = 'foobar';
-        this.poParserSpy = jasmine.createSpyObj('AjaxProvider', ['load']);
-        this.poParserSpy.load.and.callFake(function(domain, url, type, callback) {
+        this.ajaxProviderSpy = jasmine.createSpyObj('AjaxProvider', ['load']);
+        this.ajaxProviderSpy.load.and.callFake(function(domain, url, type, callback) {
             var returnValue = jasmine.createSpyObj('DomainCollection', ['getDomainNames', 'getDomain']);
             returnValue.getDomainNames.and.returnValue([domain]);
             returnValue.getDomain.and.returnValue([]);
@@ -25,8 +25,7 @@ describe('A LinkProvider instance', function() {
         });
 
         // Create LinkProvider instance
-        this.defaultDomain = 'domain';
-        this.provider = new LinkProvider(this.defaultDomain, this.poParserSpy);
+        this.provider = new LinkProvider(this.ajaxProviderSpy);
     });
 
     afterAll(function() {
@@ -50,9 +49,10 @@ describe('A LinkProvider instance', function() {
     it('loads nothing when there is no link element present', function (done) {
         var _this = this;
 
-        this.provider.load(function(result) {
+        var defaultDomain = 'foobar';
+        this.provider.load(defaultDomain, function(result) {
             expect(result.getDomainNames().length).toBe(0);
-            expect(_this.poParserSpy.load).not.toHaveBeenCalled();
+            expect(_this.ajaxProviderSpy.load).not.toHaveBeenCalled();
             done();
         });
     });
@@ -64,12 +64,24 @@ describe('A LinkProvider instance', function() {
             link('type2', 'link2.po')
         ]);
 
-        this.provider.load(function(result) {
-            expect(result.getDomainNames().sort()).toEqual([_this.defaultDomain, 'foobar'].sort());
-            expect(_this.poParserSpy.load).toHaveBeenCalledWith('foobar', 'link1.po', 'type1', jasmine.any(Function));
-            expect(_this.poParserSpy.load).toHaveBeenCalledWith(_this.defaultDomain, 'link2.po', 'type2', jasmine.any(Function));
+        var defaultDomain = 'fubar';
+        this.provider.load(defaultDomain, function(result) {
+            expect(result.getDomainNames().sort()).toEqual([defaultDomain, 'foobar'].sort());
+            expect(_this.ajaxProviderSpy.load).toHaveBeenCalledWith('foobar', 'link1.po', 'type1', jasmine.any(Function));
+            expect(_this.ajaxProviderSpy.load).toHaveBeenCalledWith(defaultDomain, 'link2.po', 'type2', jasmine.any(Function));
             done();
         });
+    });
+
+    it('throws an error, if link element does not contain a domain and no default domain was passed', function() {
+        var _this = this;
+        mockLinks([
+            link('type2', 'link2.po')
+        ]);
+
+        expect(function() {
+            _this.provider.load();
+        }).toThrowError('Link tag contains no translation domain and no default domain was provided.');
     });
 
     it('ignores invalid links', function(done) {
@@ -79,9 +91,10 @@ describe('A LinkProvider instance', function() {
             link('type')
         ]);
 
-        this.provider.load(function(result) {
+        var defaultDomain = 'foobar';
+        this.provider.load(defaultDomain, function(result) {
             expect(result.getDomainNames()).toEqual([]);
-            expect(_this.poParserSpy.load).not.toHaveBeenCalled();
+            expect(_this.ajaxProviderSpy.load).not.toHaveBeenCalled();
             done();
         });
     });

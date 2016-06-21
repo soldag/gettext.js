@@ -5,30 +5,30 @@ var StringProvider = require('./StringProvider');
 var DispatchingProvider = require('./DispatchingProvider');
 
 
-function ProviderFactory(defaultDomain, poParser, moParser) {
-    this.defaultDomain = defaultDomain;
-    this.poParser = poParser;
-    this.moParser = moParser;
+function ProviderFactory(parserFactory) {
+    this.parserFactory = parserFactory;
 }
 
 
 ProviderFactory.prototype.createStringProvider = function() {
-    return new StringProvider(this.defaultDomain, this.poParser);
+    return new StringProvider(this.parserFactory.createPoParser());
 };
 
 
 ProviderFactory.prototype.createAjaxProvider = function () {
-    return new AjaxProvider(this.defaultDomain, this.poParser, this.moParser);
+    return new AjaxProvider(this.parserFactory.createPoParser(),
+                            this.parserFactory.createMoParser());
 };
 
 
 ProviderFactory.prototype.createLinkProvider = function() {
-    return new LinkProvider(this.defaultDomain, this.createAjaxProvider());
+    return new LinkProvider(this.createAjaxProvider());
 };
 
 
 ProviderFactory.prototype.createFileProvider = function() {
-    return new FileProvider(this.defaultDomain, this.poParser, this.moParser);
+    return new FileProvider(this.parserFactory.createPoParser(),
+                            this.parserFactory.createMoParser());
 };
 
 

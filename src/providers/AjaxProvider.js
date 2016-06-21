@@ -1,8 +1,7 @@
 var isNode = require('detect-node');
 
 
-function AjaxProvider(defaultDomain, poParser, moParser) {
-    this.defaultDomain = defaultDomain;
+function AjaxProvider(poParser, moParser) {
     this.poParser = poParser;
     this.moParser = moParser;
 }
@@ -12,16 +11,12 @@ AjaxProvider.prototype.MO_MIME_TYPE = 'application/gettext-mo';
 
 
 AjaxProvider.prototype.canLoadFromOptions = function(options) {
-    return options.mode === 'ajax' && 'url' in options && 'type' in options;
+    return options.mode === 'ajax' && 'domain' in options && 'url' in options && 'type' in options;
 };
 
 
 AjaxProvider.prototype.loadFromOptions = function(options, callback) {
-    var domain = options.domain || this.defaultDomain;
-    var url = options.url;
-    var type = options.type;
-
-    this.load(domain, url, type, callback);
+    this.load(options.domain, options.url, options.type, callback);
 };
 
 
