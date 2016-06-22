@@ -21,14 +21,12 @@
 
 
 # Installation
-### Node.JS
-
 *j29n* is published on [npmjs](https://www.npmjs.com/package/j29n) and can be installed using *npm*. 
 
 `npm install j29n`
 
-### Browser
-For the use in the browser, the source files have to be bundled together with their dependencies first. This bundled file and a minimized version are attatched to the respective GitHub releases. Alternatively, [grunt](https://github.com/gruntjs/grunt) can be used to build them manually. By executing `grunt browser`, the two files will be created inside the `dist` folder. 
+### Browser Bundles
+For the use in the browser, the source files have to be bundled together with their dependencies first. This bundled file and a minimized version were shipped with each NPM release and can be found in the `dist` directory. Additionally, the files are attatched to the respective GitHub releases. Alternatively, [grunt](https://github.com/gruntjs/grunt) can be used to build them from source manually by executing `grunt browser`.
 
 *j29n* supports AMD module loading, so [RequireJS](https://github.com/requirejs/requirejs) can be used. Alternatively, the library can simply be embedded in an HTML page using the `script` tag. In this case, the *j29n* module will be made globally available.
 
@@ -36,9 +34,8 @@ For the use in the browser, the source files have to be bundled together with th
 The *j29n* module exports a `j29n` object, which is a singleton responsible for all the internationalization work and the only point of contact with the library.
 
 ### Loading translation files
-Translation files can be load either by passing the content as string (only for PO files) or loading it asynchronously using Ajax. 
 
-##### Load translations as string
+##### Load translations from string
 ```js
 j29n.load({
   mode: 'string',
