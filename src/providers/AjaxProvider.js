@@ -16,6 +16,10 @@ AjaxProvider.prototype.canLoadFromOptions = function(options) {
 
 
 AjaxProvider.prototype.loadFromOptions = function(options, callback) {
+    if(!this.canLoadFromOptions(options)) {
+        throw new Error('No valid options provided for loading translation domains.');
+    }
+
     this.load(options.domain, options.url, options.type, callback);
 };
 

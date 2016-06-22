@@ -15,6 +15,10 @@ FileProvider.prototype.canLoadFromOptions = function(options) {
 };
 
 FileProvider.prototype.loadFromOptions = function(options, callback) {
+    if(!this.canLoadFromOptions(options)) {
+        throw new Error('No valid options provided for loading translation domains.');
+    }
+
     this.load(options.domain, options.path, callback);
 };
 

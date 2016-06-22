@@ -122,4 +122,16 @@ describe('A FileProvider instance', function() {
         this.provider.loadFromOptions(options, callback);
         expect(this.provider.load).toHaveBeenCalledWith(options.domain, options.path, callback);
     });
+
+    it('throws an error when passing invalid options', function() {
+        var _this = this;
+        var options = {
+            text: 'foobar',
+            domain: 'foobar'
+        };
+
+        expect(function () {
+            _this.provider.loadFromOptions(options);
+        }).toThrowError('No valid options provided for loading translation domains.');
+    });
 });

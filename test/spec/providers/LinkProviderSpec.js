@@ -109,6 +109,17 @@ describe('A LinkProvider instance', function() {
         expect(this.provider.load).toHaveBeenCalled();
     });
 
+    it('throws an error when passing invalid options', function() {
+        var _this = this;
+        var options = {
+            mode: 'html'
+        };
+
+        expect(function () {
+            _this.provider.loadFromOptions(options);
+        }).toThrowError('No valid options provided for loading translation domains.');
+    });
+
 
     function mockLinks(links) {
         global.document.getElementsByTagName = function(name) {
