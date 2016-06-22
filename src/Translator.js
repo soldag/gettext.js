@@ -198,7 +198,7 @@ Translator.prototype.getTranslation = function(domain, context, key, hasPlural) 
 
 
 Translator.prototype.translationMatches = function(translation, hasPlural, context) {
-    var hasContext = typeof(context) !== 'undefined' && context !== null;
+    var hasContext = context != null;
     return translation.hasContext() === hasContext
         && hasPlural === translation.hasPlural()
         && (!hasContext || translation.getContext() === context)
@@ -216,7 +216,7 @@ Translator.prototype.getPluralForm = function(domain, n) {
                 eval(pluralFormDefinition);
             }
             catch(e) { }
-            if (typeof(plural) === 'undefined') {
+            if (plural == null) {
                 plural = 0;
             }
             else if (nplurals === 2 && typeof(plural) === 'boolean') {

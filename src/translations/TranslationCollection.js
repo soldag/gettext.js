@@ -1,6 +1,6 @@
 function TranslationCollection(headers, translations) {
-    this.headers = typeof headers !== 'undefined' ? headers : {};
-    this.translations = typeof translations !== 'undefined' ? translations : {};
+    this.headers = headers || {};
+    this.translations = translations || {};
 }
 
 

@@ -4,10 +4,9 @@ var DomainCollection = function(domains) {
 
 
 DomainCollection.prototype.addAllDomains = function(domainCollection, overwrite) {
-    if(typeof overwrite === 'undefined') {
+    if(overwrite == null) {
         overwrite = true;
     }
-
     var domains = domainCollection.getDomainNames();
     for(var i = 0; i < domains.length; i++) {
        var domain = domains[i];
