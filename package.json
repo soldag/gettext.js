@@ -9,7 +9,7 @@
     "internationalization",
     "i18n"
   ],
-  "main": "src/main.js",
+  "main": "index.js",
   "scripts": {
     "test": "istanbul cover test/runner.js"
   },

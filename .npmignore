@@ -8,9 +8,6 @@ node_modules/*
 # Test coverage reports
 coverage/*
 
-# Build outputs
-dist/*
-
 # Tests
 test/*
 

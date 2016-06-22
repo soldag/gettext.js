@@ -1,6 +1,6 @@
-var ParserFactory = require('./parsers/ParserFactory');
-var ProviderFactory = require('./providers/ProviderFactory');
-var TranslatorFactory = require('./TranslatorFactory');
+var ParserFactory = require('./src/parsers/ParserFactory');
+var ProviderFactory = require('./src/providers/ProviderFactory');
+var TranslatorFactory = require('./src/TranslatorFactory');
 
 
 var defaultDomain = 'messages';
