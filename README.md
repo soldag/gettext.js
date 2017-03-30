@@ -13,7 +13,7 @@
 [dependencies-url]: https://david-dm.org/soldag/j29n
 
 [dev-dependencies-image]: https://david-dm.org/soldag/j29n/dev-status.svg
-[dev-dependencies-url]: https://david-dm.org/soldag/j29n#info=devDependencies
+[dev-dependencies-url]: https://david-dm.org/soldag/j29n?type=dev
 
 *j29n* (short for *JavaScript Internationalization*) is a simple and lightweight GNU gettext implementation for JavaScript. It makes it easy to load translations from PO or MO files and use them for localization in both  browser and Node.JS. The library supports different translation domains, contexts and plural forms. Additionally, it comes with an built-in string formatting mechanism for parameterized messages.
 
