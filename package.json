@@ -14,7 +14,6 @@
     "test": "istanbul cover test/runner.js"
   },
   "devDependencies": {
-    "codecov": "^2.1.0",
     "grunt": "^1.0.1",
     "grunt-browserify": "^5.0.0",
     "grunt-contrib-uglify": "^2.2.0",
