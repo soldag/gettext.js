@@ -8,15 +8,21 @@ after_script:
   - codeclimate-test-reporter < ./coverage/lcov.info
 before_deploy: npm install -g grunt-cli && grunt
 deploy:
-  provider: releases
-  api_key:
-    secure: BuwI6ZTmF1jqRS1Eml/zUEwd5yCsdL6R2DBN2MaCZa+uftXm1tgsmWX+Js2hPv7w6iA9Ekx0gLgok0yn6rjZGodIqraRRE+jD6IC7WSa+Ix2JrYudqVePoiPcM+ODfYZMLLwz7tL2urJH8PzTBuiXyUbY3YWJdHXqSMO8OEo/dPcfI3S4dUUvB9MUxG8jtnq/G1COuHp1JkAZOURLQNkb3uiOTm+kVQYtSmHTJMG4IoB9fJsd5CRmFISTtaphXEWVyE9ZpLU5W3K1LL3a9caza3//jTfbepyCeoYVXVONtpC7wH6zd80/3WhIkCsdYFzSoIz/uKYzGhR6PmtzDPysr1kprYZL37fjAmey+HxIbxIvv84tgtYYWIAnodu7oH+4MPocjnpGhuMJnw0pu1oWJf3jsaRbg7Z7D4WXmCCiAK6CtZvNc+183d1BDb/aNTlSXZpQEM0EfHFdV8J/Cy7EAB9jOhjQov1WO9UvrKCmqdKmX020ijZ5C1LfkyRwqJXmdSxbhV/0Zl2sQnJso/FfUf8I83AANx0yCvyUiBH48WuFojPwtYLQXaJTllKOU+CCfgsebwmg2UEwmeWbf2XnsMj6Ed6s/37UF9HDQMnoTWv0RbPgU+NYR9/tgt8GjrZTpdFbXdtuNXdrNEgf8NmhOr2ZYEiqpx6hKvMGXvIaAk=
-  file:
-    - dist/j29n.js
-    - dist/j29n.min.js
-  skip_cleanup: true
-  on:
-    tags: true
+  - provider: releases
+    api_key:
+      secure: BuwI6ZTmF1jqRS1Eml/zUEwd5yCsdL6R2DBN2MaCZa+uftXm1tgsmWX+Js2hPv7w6iA9Ekx0gLgok0yn6rjZGodIqraRRE+jD6IC7WSa+Ix2JrYudqVePoiPcM+ODfYZMLLwz7tL2urJH8PzTBuiXyUbY3YWJdHXqSMO8OEo/dPcfI3S4dUUvB9MUxG8jtnq/G1COuHp1JkAZOURLQNkb3uiOTm+kVQYtSmHTJMG4IoB9fJsd5CRmFISTtaphXEWVyE9ZpLU5W3K1LL3a9caza3//jTfbepyCeoYVXVONtpC7wH6zd80/3WhIkCsdYFzSoIz/uKYzGhR6PmtzDPysr1kprYZL37fjAmey+HxIbxIvv84tgtYYWIAnodu7oH+4MPocjnpGhuMJnw0pu1oWJf3jsaRbg7Z7D4WXmCCiAK6CtZvNc+183d1BDb/aNTlSXZpQEM0EfHFdV8J/Cy7EAB9jOhjQov1WO9UvrKCmqdKmX020ijZ5C1LfkyRwqJXmdSxbhV/0Zl2sQnJso/FfUf8I83AANx0yCvyUiBH48WuFojPwtYLQXaJTllKOU+CCfgsebwmg2UEwmeWbf2XnsMj6Ed6s/37UF9HDQMnoTWv0RbPgU+NYR9/tgt8GjrZTpdFbXdtuNXdrNEgf8NmhOr2ZYEiqpx6hKvMGXvIaAk=
+    file:
+      - dist/j29n.js
+      - dist/j29n.min.js
+    skip_cleanup: true
+    on:
+      tags: true
+  - provider: npm
+    email: soeren_oldag@freenet.de
+    api_key:
+      secure: U7nTqteV/DUXfrpTkO7FLX7SSGalo99f0ocC8SneUl+0rXK/KtTq2L26KJK7s4LXhchgfBYu03cFLdDZMZ7hGHn228Y51raE+PmlFe3/RI3Mgzx6NtYrlbUBWRgM95Zc9pZDPOPhJ4at8CjO4VuDKArY3YGOwRiO4h/kSfEMJ2wU0HNozku/BQ5vPW0WilE1NrOK5FnC6qSbCne9x8FdVr0+gc6jgFVfxPub2pZ0ePuY3qMIQWjwmCf8zEi0ru8IQOZbYsUIFVtVUs+5A4xjdafSyCUuo196E4kAV5cEOmqhBBLsCVRX5jtCuUghJz35LQhHdCYua1pieOKdkMM6hmX/2kPMps5kseFwtdBlRjwo/nl+RL8IYHtDjv44kOH9sPO7Kljahz0YazkQqNKUPYh6tK0vE5yIkQdjMSDR4Dk0X618N9dLiEumP2/Rdeq38+U6CD8cjrhLBNAI8fxP2l3j0vM/sJUz+Jahus15/U0JTtdEDRQsE2bOcBMil7OlEBqd9aRIkFPsJ3aU1UKPhidDcJWwwirRy+xdYneHOiRCScvRAr86L12H9W32G/J0Fntqpvbb91GZgFgOQ8erFWls3dYY61CatLbPQxoLTfHij1R+CLRsfuLe5RqeSYq/3dQK3cHMg9z9zOul2X0S7XFpvEYpI+HR9zabQEH/YFM=
+    on:
+      tags: true
 addons:
   code_climate:
     repo_token: 0392217b68c4b09602e084d4ece9a6ea0d090069aaa3f8b3f0e388d0a3c86f4d
