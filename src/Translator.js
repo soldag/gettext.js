@@ -14,6 +14,18 @@ function Translator(provider, defaultDomain, ignoreFuzzy) {
 
 
 Translator.prototype.DEFAULT_IGNORE_FUZZY = true;
+Translator.prototype.FUNC_MAPPING = {
+    true: {
+        2: 'ngettext',
+        3: 'dngettext',
+        4: 'dcngettext'
+    },
+    false: {
+        1: 'gettext',
+        2: 'dgettext',
+        3: 'dcgettext'
+    }
+};
 
 
 Translator.prototype.setIgnoreFuzzy = function(value) {
@@ -78,7 +90,7 @@ Translator.prototype.translate = function() {
         }).indexOf(false) === -1;
         if(allStrings) {
             // Pass arguments to the appropriate gettext function
-            var func = this.getAppropriateFunction(stringArgsLength, hasNumeric);
+            var func = this[this.FUNC_MAPPING[hasNumeric][stringArgsLength]];
             if(func) {
                 return func.apply(this, args);
             }
@@ -86,34 +98,6 @@ Translator.prototype.translate = function() {
     }
 
     throw new Error('Arguments are not valid for any of the gettext functions.');
-};
-
-
-Translator.prototype.getAppropriateFunction = function(stringArgsLength, hasNumeric) {
-    if(!hasNumeric) {
-        switch(stringArgsLength) {
-            case 1:
-                return this.gettext;
-
-            case 2:
-                return this.dgettext;
-
-            case 3:
-                return this.dcgettext;
-        }
-    }
-    else {
-        switch(stringArgsLength) {
-            case 2:
-                return this.ngettext;
-
-            case 3:
-                return this.dngettext;
-
-            case 4:
-                return this.dcngettext;
-        }
-    }
 };
 
 
@@ -198,7 +182,7 @@ Translator.prototype.getTranslation = function(domain, context, key, hasPlural) 
 
 
 Translator.prototype.translationMatches = function(translation, hasPlural, context) {
-    var hasContext = context != null;
+    var hasContext = context !== null;
     return translation.hasContext() === hasContext
         && hasPlural === translation.hasPlural()
         && (!hasContext || translation.getContext() === context)
@@ -210,24 +194,30 @@ Translator.prototype.getPluralForm = function(domain, n) {
     if (this.domains.hasDomain(domain)) {
         var translationCollection = this.domains.getDomain(domain);
         if (translationCollection.hasHeader('Plural-Forms')) {
-            var pluralFormDefinition = translationCollection.getHeader('Plural-Forms');
-            var nplurals, plural;
-            try {
-                eval(pluralFormDefinition);
-            }
-            catch(e) { }
-            if (plural == null) {
-                plural = 0;
-            }
-            else if (nplurals === 2 && typeof(plural) === 'boolean') {
-                plural = plural ? 1 : 0
-            }
-
-            return plural;
+            return this.evalPluralFormDefinition(n, translationCollection.getHeader('Plural-Forms'));
         }
     }
 
     return n === 1 ? 0 : 1;
+};
+
+Translator.prototype.evalPluralFormDefinition = function(n, pluralFormDefinition) {
+    var nplurals, plural;
+    try {
+        // eslint-disable-next-line no-eval
+        eval(pluralFormDefinition);
+    }
+    catch(e) {
+        // continue regardless of error
+    }
+    if (typeof(plural) === 'undefined') {
+        plural = 0;
+    }
+    else if (nplurals === 2 && typeof(plural) === 'boolean') {
+        plural = plural ? 1 : 0
+    }
+
+    return plural;
 };
 
 
